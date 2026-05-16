@@ -1,52 +1,7 @@
 import PageWrapper from "../components/PageWrapper";
-import { GRADIENT, ASSETS } from "../lib/assets";
-
-const DROPS = [
-  {
-    id: "krypta-collector-mouse",
-    title: "KRYPTA x Pro-Gamer Collector Edition Mouse",
-    desc: "Limited to 500 units worldwide. Handcrafted design, ultra-lightweight at 58g.",
-    price: 249,
-    available: 47,
-    total: 500,
-    img: ASSETS.productGamingMouse,
-    status: "live" as const,
-    endsIn: "2d 14h 32m",
-  },
-  {
-    id: "krypta-rtx-bundle",
-    title: "KRYPTA RTX 5090 Founder's Edition Bundle",
-    desc: "Exclusive bundle: RTX 5090 FE + custom KRYPTA branded case + mouse pad.",
-    price: 2499,
-    available: 12,
-    total: 50,
-    img: ASSETS.productRtx5090,
-    status: "live" as const,
-    endsIn: "5d 8h 12m",
-  },
-  {
-    id: "krypta-merch-hoodie",
-    title: "KRYPTA Premium Gaming Hoodie — Stealth Black",
-    desc: "Premium quality, limited edition KRYPTA branded hoodie. Available in S to 3XL.",
-    price: 89,
-    available: 0,
-    total: 200,
-    img: ASSETS.catGamingPCs,
-    status: "sold_out" as const,
-    endsIn: null,
-  },
-  {
-    id: "krypta-keyboard-drop",
-    title: "KRYPTA x Artisan Mechanical Keyboard",
-    desc: "Custom colorway, hotswap switches, premium PBT keycaps. 75% layout.",
-    price: 329,
-    available: 0,
-    total: 150,
-    img: ASSETS.catPeripherals,
-    status: "upcoming" as const,
-    endsIn: null,
-  },
-];
+import { GRADIENT } from "../lib/assets";
+import { api } from "../lib/api";
+import type { Drop } from "../lib/types";
 
 const STATUS_CONFIG = {
   live: { label: "Live Now", color: "text-green-400", dot: "bg-green-400" },
@@ -54,18 +9,27 @@ const STATUS_CONFIG = {
   upcoming: { label: "Coming Soon", color: "text-[#00f5ff]", dot: "bg-[#00f5ff]" },
 };
 
-export default function DropsPage() {
+function formatCountdown(endsAt: string): string {
+  const diff = new Date(endsAt).getTime() - Date.now();
+  if (diff <= 0) return "Ended";
+  const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  return `${d}d ${h}h ${m}m`;
+}
+
+export default async function DropsPage() {
+  const drops: Drop[] = await api.drops.list();
+
   return (
     <PageWrapper>
       <div className="px-24 pb-16 flex flex-col gap-10">
-        {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-[#a0a0a0]">
           <a href="/" className="hover:text-white transition-colors">Home</a>
           <span className="text-white/20">/</span>
           <span className="text-white">Krypta Drops</span>
         </nav>
 
-        {/* Header */}
         <div className="flex flex-col gap-4">
           <h1 className="text-5xl font-bold text-white tracking-[-0.96px]">Krypta Drops</h1>
           <p className="text-2xl font-normal text-[#a0a0a0] max-w-[700px]">
@@ -73,9 +37,8 @@ export default function DropsPage() {
           </p>
         </div>
 
-        {/* Drops grid */}
         <div className="grid grid-cols-2 gap-6">
-          {DROPS.map(({ id, title, desc, price, available, total, img, status, endsIn }) => {
+          {drops.map(({ id, title, description, price, available, total, img, status, endsAt }) => {
             const cfg = STATUS_CONFIG[status];
             const pct = status === "sold_out" ? 100 : Math.round(((total - available) / total) * 100);
 
@@ -88,9 +51,9 @@ export default function DropsPage() {
                     <span className={`size-2 rounded-full ${cfg.dot} ${status === "live" ? "animate-pulse" : ""}`} />
                     <span className={`text-xs font-medium ${cfg.color}`}>{cfg.label}</span>
                   </div>
-                  {endsIn && (
+                  {endsAt && status === "live" && (
                     <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-sm rounded-xl px-3 py-1.5">
-                      <span className="text-white text-xs font-medium">⏱ {endsIn}</span>
+                      <span className="text-white text-xs font-medium">⏱ {formatCountdown(endsAt)}</span>
                     </div>
                   )}
                 </div>
@@ -98,10 +61,9 @@ export default function DropsPage() {
                 <div className="p-6 flex flex-col gap-4">
                   <div>
                     <h3 className="text-white text-xl font-medium leading-tight">{title}</h3>
-                    <p className="text-[#a0a0a0] text-sm mt-2 leading-5">{desc}</p>
+                    <p className="text-[#a0a0a0] text-sm mt-2 leading-5">{description}</p>
                   </div>
 
-                  {/* Progress */}
                   <div className="flex flex-col gap-2">
                     <div className="flex justify-between text-xs text-[#a0a0a0]">
                       <span>{total - available} / {total} claimed</span>
@@ -135,7 +97,6 @@ export default function DropsPage() {
           })}
         </div>
 
-        {/* Newsletter for drop alerts */}
         <div
           className="rounded-2xl p-10 border border-[rgba(1,245,255,0.2)] flex flex-col items-center gap-6 text-center"
           style={{ background: "linear-gradient(90deg, rgba(1,245,255,0.08), rgba(30,58,255,0.08))" }}

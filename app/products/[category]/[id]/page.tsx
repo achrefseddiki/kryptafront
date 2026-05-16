@@ -1,12 +1,7 @@
+import { notFound } from "next/navigation";
 import PageWrapper from "../../../components/PageWrapper";
 import { GRADIENT } from "../../../lib/assets";
-import { GPU_PRODUCTS } from "../../../lib/data";
-
-const REVIEWS = [
-  { author: "Ahmed B.", rating: 5, date: "May 8, 2026", body: "Incredible card, runs everything at 4K ultra settings. Worth every dinar." },
-  { author: "Sami K.", rating: 5, date: "April 30, 2026", body: "Fast delivery from Krypta, card was perfectly packaged. Performance is insane." },
-  { author: "Rami L.", rating: 4, date: "April 22, 2026", body: "Excellent GPU, temps are great with proper airflow. Highly recommend." },
-];
+import { api } from "../../../lib/api";
 
 export default async function ProductDetailPage({
   params,
@@ -14,12 +9,19 @@ export default async function ProductDetailPage({
   params: Promise<{ category: string; id: string }>;
 }) {
   const { category, id } = await params;
-  const product = GPU_PRODUCTS.find((p) => p.id === id) ?? GPU_PRODUCTS[0];
+
+  let product;
+  try {
+    product = await api.products.getBySlug(id);
+  } catch {
+    notFound();
+  }
+
+  const reviews = await api.products.reviews(product.id).catch(() => []);
 
   return (
     <PageWrapper>
       <div className="px-24 flex flex-col gap-10">
-        {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-[#a0a0a0]">
           <a href="/" className="hover:text-white transition-colors">Home</a>
           <span className="text-white/20">/</span>
@@ -30,9 +32,7 @@ export default async function ProductDetailPage({
           <span className="text-white truncate max-w-[200px]">{product.name}</span>
         </nav>
 
-        {/* Product layout */}
         <div className="flex gap-12">
-          {/* Image gallery */}
           <div className="flex gap-4 shrink-0">
             <div className="flex flex-col gap-3">
               {[1, 2, 3, 4].map((i) => (
@@ -46,7 +46,6 @@ export default async function ProductDetailPage({
             </div>
           </div>
 
-          {/* Product info */}
           <div className="flex-1 flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               <p className="text-[#a0a0a0] text-sm uppercase tracking-widest font-medium">{product.brand}</p>
@@ -55,7 +54,7 @@ export default async function ProductDetailPage({
                 {[1,2,3,4,5].map((s) => (
                   <span key={s} className="text-[#00f5ff] text-lg">★</span>
                 ))}
-                <span className="text-[#a0a0a0] text-sm ml-1">({REVIEWS.length} reviews)</span>
+                <span className="text-[#a0a0a0] text-sm ml-1">({reviews.length} reviews)</span>
               </div>
             </div>
 
@@ -66,7 +65,6 @@ export default async function ProductDetailPage({
               )}
             </div>
 
-            {/* Specs pills */}
             <div className="flex flex-wrap gap-2">
               {product.specs.map((s) => (
                 <span key={s} className="border border-[rgba(255,255,255,0.15)] rounded-xl px-4 py-2 text-sm text-[#a0a0a0]">
@@ -75,14 +73,14 @@ export default async function ProductDetailPage({
               ))}
             </div>
 
-            {/* Stock */}
             <div className="flex items-center gap-2">
-              <span className="size-2 rounded-full bg-green-400" />
-              <span className="text-green-400 text-sm font-medium">In Stock</span>
-              <span className="text-[#a0a0a0] text-sm">— Ready to ship</span>
+              <span className={`size-2 rounded-full ${product.inStock ? 'bg-green-400' : 'bg-red-400'}`} />
+              <span className={`text-sm font-medium ${product.inStock ? 'text-green-400' : 'text-red-400'}`}>
+                {product.inStock ? 'In Stock' : 'Out of Stock'}
+              </span>
+              {product.inStock && <span className="text-[#a0a0a0] text-sm">— Ready to ship</span>}
             </div>
 
-            {/* Qty + Add to cart */}
             <div className="flex items-center gap-4">
               <div className="flex items-center bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-xl">
                 <button className="w-11 h-11 flex items-center justify-center text-white text-xl hover:text-[#00f5ff] transition-colors">−</button>
@@ -104,7 +102,6 @@ export default async function ProductDetailPage({
               </a>
             </div>
 
-            {/* Guarantees */}
             <div className="grid grid-cols-3 gap-4 pt-4 border-t border-[rgba(255,255,255,0.08)]">
               {[
                 { label: "2-Year Warranty", icon: "🛡️" },
@@ -120,7 +117,6 @@ export default async function ProductDetailPage({
           </div>
         </div>
 
-        {/* Tabs: Description | Reviews */}
         <div className="flex flex-col gap-8 pb-16">
           <div className="flex gap-8 border-b border-[rgba(255,255,255,0.08)]">
             {["Description", "Specifications", "Reviews"].map((tab, i) => (
@@ -141,35 +137,39 @@ export default async function ProductDetailPage({
             ))}
           </div>
 
-          {/* Description content */}
           <div className="flex flex-col gap-4 max-w-[800px]">
             <p className="text-[#a0a0a0] text-base leading-[26px]">
-              {`The ${product.name} represents the pinnacle of GPU engineering. Built on the latest architecture, it delivers unparalleled performance for 4K gaming, ray tracing, and AI-accelerated workloads. Whether you're a competitive gamer demanding the highest frame rates or a content creator needing GPU-accelerated rendering, this card handles every task with ease.`}
+              {`The ${product.name} represents the pinnacle of GPU engineering. Built on the latest architecture, it delivers unparalleled performance for 4K gaming, ray tracing, and AI-accelerated workloads.`}
             </p>
             <p className="text-[#a0a0a0] text-base leading-[26px]">
-              {`Compatible with the latest PCIe slots and featuring advanced thermal management, the ${product.name} maintains optimal temperatures even under sustained load. Its comprehensive driver support ensures compatibility with all major game titles and creative applications.`}
+              {`Compatible with the latest PCIe slots and featuring advanced thermal management, the ${product.name} maintains optimal temperatures even under sustained load.`}
             </p>
           </div>
 
-          {/* Reviews */}
           <div className="flex flex-col gap-6 mt-4">
             <h3 className="text-white text-2xl font-medium">Customer Reviews</h3>
-            {REVIEWS.map(({ author, rating, date, body }) => (
-              <div key={author} className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-6 flex flex-col gap-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-white text-base font-medium">{author}</span>
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: rating }).map((_, i) => (
-                        <span key={i} className="text-[#00f5ff] text-sm">★</span>
-                      ))}
+            {reviews.length === 0 ? (
+              <p className="text-[#a0a0a0]">No reviews yet.</p>
+            ) : (
+              reviews.map(({ id: rid, author, rating, body, createdAt }) => (
+                <div key={rid} className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-6 flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-white text-base font-medium">{author}</span>
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: rating }).map((_, i) => (
+                          <span key={i} className="text-[#00f5ff] text-sm">★</span>
+                        ))}
+                      </div>
                     </div>
+                    <span className="text-[#a0a0a0] text-sm">
+                      {new Date(createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </span>
                   </div>
-                  <span className="text-[#a0a0a0] text-sm">{date}</span>
+                  <p className="text-[#a0a0a0] text-sm leading-6">{body}</p>
                 </div>
-                <p className="text-[#a0a0a0] text-sm leading-6">{body}</p>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>

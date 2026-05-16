@@ -1,6 +1,6 @@
 import PageWrapper from "../components/PageWrapper";
 import { GRADIENT } from "../lib/assets";
-import { PC_CATEGORIES } from "../lib/data";
+import { api } from "../lib/api";
 
 const BUYING_GUIDE = [
   {
@@ -21,18 +21,18 @@ const BUYING_GUIDE = [
   },
 ];
 
-export default function PcComponentsPage() {
+export default async function PcComponentsPage() {
+  const categories = await api.categories.list();
+
   return (
     <PageWrapper>
       <div className="px-24 flex flex-col gap-8">
-        {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-[#a0a0a0]">
           <a href="/" className="hover:text-white transition-colors">Home</a>
           <span className="text-white/20">/</span>
           <span className="text-white">PC Components</span>
         </nav>
 
-        {/* Page heading */}
         <div className="flex flex-col gap-4 max-w-[896px]">
           <h1 className="text-5xl font-bold text-white tracking-[-0.96px] leading-[48px]">PC Components</h1>
           <p className="text-[32px] font-normal text-[#a0a0a0] leading-[44.8px]">Premium parts for your custom build</p>
@@ -42,23 +42,20 @@ export default function PcComponentsPage() {
         </div>
       </div>
 
-      {/* Category grid */}
       <div className="px-24">
         <div className="grid grid-cols-4 gap-6">
-          {PC_CATEGORIES.map(({ slug, label, count }) => (
+          {categories.map(({ slug, label }) => (
             <a
               key={slug}
               href={`/products/${slug}`}
               className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl h-[162px] flex flex-col items-center justify-center gap-2 hover:border-[#00f5ff]/50 hover:bg-[#1a1a1a]/80 transition-colors text-center"
             >
               <span className="text-5xl font-medium text-white">{label}</span>
-              <span className="text-base font-normal text-[#a0a0a0]">{count} products</span>
             </a>
           ))}
         </div>
       </div>
 
-      {/* Buying guide */}
       <div className="px-24 flex flex-col gap-12 pb-10">
         <h2
           className="text-[36px] font-bold tracking-[-0.36px] bg-clip-text text-transparent"
@@ -76,7 +73,6 @@ export default function PcComponentsPage() {
           ))}
         </div>
 
-        {/* CTA card */}
         <div
           className="rounded-2xl p-8 border border-[rgba(1,245,255,0.2)] flex flex-col gap-12"
           style={{ background: "linear-gradient(90deg, rgba(1,245,255,0.1) 0%, rgba(30,58,255,0.1) 100%)" }}
