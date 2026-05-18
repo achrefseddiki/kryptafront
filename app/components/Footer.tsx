@@ -1,26 +1,5 @@
 import { ASSETS } from "../lib/assets";
-
-const FOOTER_LINKS: Record<string, { label: string; href: string }[]> = {
-  Shop: [
-    { label: "Gaming PCs", href: "#" },
-    { label: "Components", href: "/products" },
-    { label: "Peripherals", href: "#" },
-    { label: "Streaming Gear", href: "#" },
-  ],
-  Krypta: [
-    { label: "Build Your Setup", href: "/builder" },
-    { label: "Drops", href: "/drops" },
-    { label: "Custom Requests", href: "#" },
-    { label: "Guides & Articles", href: "/blog" },
-    { label: "Esports", href: "#" },
-  ],
-  "Support & Legal": [
-    { label: "Contact Us", href: "#" },
-    { label: "Shipping", href: "#" },
-    { label: "Privacy Policy", href: "#" },
-    { label: "Terms of Service", href: "#" },
-  ],
-};
+import { getLocale, getDict } from "../lib/i18n";
 
 const SOCIAL_ICONS = [
   ASSETS.iconSocial1,
@@ -29,16 +8,19 @@ const SOCIAL_ICONS = [
   ASSETS.iconSocial4,
 ];
 
-export default function Footer() {
+export default async function Footer() {
+  const locale = await getLocale();
+  const t = getDict(locale);
+
   return (
     <footer className="border-t border-black pt-5 pb-7 px-24 flex flex-col items-center gap-10">
       {/* Link columns + newsletter */}
       <div className="flex gap-10 w-full justify-between">
-        {Object.entries(FOOTER_LINKS).map(([heading, links]) => (
+        {t.home.footer.links.map(({ heading, items }) => (
           <div key={heading} className="flex flex-col gap-4">
             <p className="text-white text-sm font-medium leading-5">{heading}</p>
             <ul className="flex flex-col gap-3">
-              {links.map(({ label, href }) => (
+              {items.map(({ label, href }) => (
                 <li key={label}>
                   <a href={href} className="text-[#a0a0a0] text-sm font-normal leading-5 hover:text-white transition-colors">
                     {label}
@@ -51,18 +33,18 @@ export default function Footer() {
 
         {/* Newsletter */}
         <div className="flex flex-col gap-4 max-w-[362px]">
-          <p className="text-white text-sm font-medium leading-5">Stay Up To Date</p>
+          <p className="text-white text-sm font-medium leading-5">{t.home.footer.stayUpToDate}</p>
           <p className="text-[#a0a0a0] text-sm font-normal leading-5 text-justify max-w-[306px]">
-            {"Rejoins notre communauté de +300.000 fans de gaming et d'esport et accède à des offres exclusives."}
+            {t.home.footer.newsletter}
           </p>
           <div className="flex gap-4 items-center mt-6">
             <input
               type="email"
-              placeholder="Drop ton email"
+              placeholder={t.home.footer.placeholder}
               className="bg-[rgba(255,255,255,0.15)] border border-[#ddd] rounded-[3px] h-10 px-3.5 text-sm text-[#777] placeholder:text-[#777] outline-none focus:border-[#00f5ff] transition-colors w-[242px]"
             />
             <button className="bg-white text-[#111] text-sm font-semibold h-10 px-5 rounded-[5px] hover:bg-gray-100 transition-colors whitespace-nowrap">
-              {"S'inscrire"}
+              {t.home.footer.subscribe}
             </button>
           </div>
         </div>
@@ -88,7 +70,7 @@ export default function Footer() {
       </div>
 
       <p className="text-[#a0a0a0] text-sm font-normal text-center leading-5">
-        © 2026 KRYPTA. All rights reserved.
+        {t.home.footer.copyright}
       </p>
     </footer>
   );

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import PageWrapper from "../../components/PageWrapper";
 import { GRADIENT } from "../../lib/assets";
 import { api } from "../../lib/api";
+import { getLocale, getDict } from "../../lib/i18n";
 
 export default async function BlogPostPage({
   params,
@@ -10,17 +11,17 @@ export default async function BlogPostPage({
 }) {
   const { slug } = await params;
 
-  let post;
-  try {
-    post = await api.blogPosts.get(slug);
-  } catch {
-    notFound();
-  }
+  const [locale, post] = await Promise.all([
+    getLocale(),
+    api.blogPosts.get(slug).catch(() => null),
+  ]);
+  if (!post) notFound();
 
+  const t = getDict(locale);
   const allPosts = await api.blogPosts.list().catch(() => []);
   const related = allPosts.filter((p) => p.slug !== post.slug).slice(0, 3);
 
-  const formattedDate = new Date(post.createdAt).toLocaleDateString('en-US', {
+  const formattedDate = new Date(post.createdAt).toLocaleDateString(t.dateLocale, {
     month: 'long', day: 'numeric', year: 'numeric',
   });
 
@@ -28,9 +29,9 @@ export default async function BlogPostPage({
     <PageWrapper>
       <div className="px-24 pb-16 flex flex-col gap-10">
         <nav className="flex items-center gap-2 text-sm text-[#a0a0a0]">
-          <a href="/" className="hover:text-white transition-colors">Home</a>
+          <a href="/" className="hover:text-white transition-colors">{t.products.home}</a>
           <span className="text-white/20">/</span>
-          <a href="/blog" className="hover:text-white transition-colors">Blog</a>
+          <a href="/blog" className="hover:text-white transition-colors">{t.blog.breadcrumb}</a>
           <span className="text-white/20">/</span>
           <span className="text-white truncate max-w-[240px]">{post.title}</span>
         </nav>
@@ -93,22 +94,20 @@ export default async function BlogPostPage({
                 style={{ background: "linear-gradient(90deg, rgba(1,245,255,0.06), rgba(30,58,255,0.06))" }}
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-white font-bold text-lg">Krypta Verdict</span>
+                  <span className="text-white font-bold text-lg">{t.blog_post.verdict}</span>
                   <div className="flex gap-1">
                     {[1,2,3,4,5].map((s) => (
                       <span key={s} className="text-[#00f5ff]">★</span>
                     ))}
                   </div>
                 </div>
-                <p className="text-[#a0a0a0] text-sm leading-6">
-                  A top-tier choice for serious gamers and builders in Tunisia. Exceptional performance, solid thermals, and available in-stock at Krypta with full warranty coverage.
-                </p>
+                <p className="text-[#a0a0a0] text-sm leading-6">{t.blog_post.verdictText}</p>
                 <a
                   href="/products"
                   className="self-start h-10 px-5 rounded-xl flex items-center text-[#0a0a0a] text-sm font-medium mt-1"
                   style={{ background: GRADIENT }}
                 >
-                  Shop Now at Krypta →
+                  {t.blog_post.shopNow}
                 </a>
               </div>
             </div>
@@ -121,15 +120,15 @@ export default async function BlogPostPage({
                 K
               </div>
               <div>
-                <p className="text-white text-sm font-medium">Krypta Editorial Team</p>
-                <p className="text-[#a0a0a0] text-xs mt-0.5">Hardware experts & gaming enthusiasts based in Tunisia</p>
+                <p className="text-white text-sm font-medium">{t.blog_post.author}</p>
+                <p className="text-[#a0a0a0] text-xs mt-0.5">{t.blog_post.authorBio}</p>
               </div>
             </div>
           </article>
 
           <aside className="w-[300px] shrink-0 flex flex-col gap-6 sticky top-[220px]">
             <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-5 flex flex-col gap-4">
-              <h3 className="text-white text-sm font-medium uppercase tracking-wider">In This Article</h3>
+              <h3 className="text-white text-sm font-medium uppercase tracking-wider">{t.blog_post.inThisArticle}</h3>
               <div className="flex flex-col gap-2">
                 {["Performance Overview", "Thermals & Power", "Value for Tunisian Gamers", "Verdict"].map((section) => (
                   <span key={section} className="text-[#a0a0a0] text-sm hover:text-[#00f5ff] cursor-pointer transition-colors">
@@ -140,9 +139,9 @@ export default async function BlogPostPage({
             </div>
 
             <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-5 flex flex-col gap-3">
-              <h3 className="text-white text-sm font-medium uppercase tracking-wider">Share Article</h3>
+              <h3 className="text-white text-sm font-medium uppercase tracking-wider">{t.blog_post.shareArticle}</h3>
               <div className="flex gap-2">
-                {["Twitter / X", "Facebook", "Copy Link"].map((platform) => (
+                {[t.blog_post.twitter, t.blog_post.facebook, t.blog_post.copyLink].map((platform) => (
                   <button
                     key={platform}
                     className="flex-1 h-9 rounded-xl text-xs font-medium text-[#a0a0a0] bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.08)] hover:text-white transition-colors"
@@ -157,10 +156,10 @@ export default async function BlogPostPage({
               className="rounded-2xl p-5 border border-[rgba(1,245,255,0.2)] flex flex-col gap-3"
               style={{ background: "linear-gradient(90deg, rgba(1,245,255,0.08), rgba(30,58,255,0.08))" }}
             >
-              <p className="text-white text-sm font-medium">Ready to build?</p>
-              <p className="text-[#a0a0a0] text-xs leading-5">Use our KryptaBar tool to configure your perfect gaming PC.</p>
+              <p className="text-white text-sm font-medium">{t.blog_post.readyToBuild}</p>
+              <p className="text-[#a0a0a0] text-xs leading-5">{t.blog_post.builderDesc}</p>
               <a href="/builder" className="text-[#00f5ff] text-sm font-medium hover:underline">
-                Launch PC Builder →
+                {t.blog_post.launchBuilder}
               </a>
             </div>
           </aside>
@@ -168,7 +167,7 @@ export default async function BlogPostPage({
 
         {related.length > 0 && (
           <div className="flex flex-col gap-6 pt-8 border-t border-[rgba(255,255,255,0.08)]">
-            <h2 className="text-2xl font-bold text-white">Related Articles</h2>
+            <h2 className="text-2xl font-bold text-white">{t.blog_post.relatedArticles}</h2>
             <div className="grid grid-cols-3 gap-6">
               {related.map(({ slug: relSlug, title, category, readTime, img, createdAt }) => (
                 <a
@@ -188,7 +187,7 @@ export default async function BlogPostPage({
                   <div className="p-4 flex flex-col gap-2">
                     <h3 className="text-white text-sm font-medium leading-snug">{title}</h3>
                     <div className="flex items-center gap-2 text-xs text-[#a0a0a0]">
-                      <span>{new Date(createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                      <span>{new Date(createdAt).toLocaleDateString(t.dateLocale, { month: 'long', day: 'numeric', year: 'numeric' })}</span>
                       <span>·</span>
                       <span>{readTime}</span>
                     </div>

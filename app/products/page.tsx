@@ -3,25 +3,6 @@ import { GRADIENT } from "../lib/assets";
 import { api } from "../lib/api";
 import { getLocale, getDict } from "../lib/i18n";
 
-const BUYING_GUIDE = [
-  {
-    title: "Choosing the Right PC Components",
-    body: "Building a custom PC allows you to select exactly the components you need for your specific use case. Whether you're assembling a high-FPS esports machine, a 4K gaming powerhouse, or a workstation for content creation, understanding each component's role is essential for making informed purchasing decisions.",
-  },
-  {
-    title: "Graphics Cards - The Heart of Gaming Performance",
-    body: "The GPU is the most important component for gaming performance. Modern graphics cards handle rendering complex 3D graphics, ray tracing effects, and AI-enhanced features like NVIDIA DLSS or AMD FSR. Choose based on your target resolution: RTX 4060 for 1080p, RTX 4080 for 1440p/4K, and RTX 5090 for maximum 4K performance with ray tracing.",
-  },
-  {
-    title: "Processors - Brain of Your System",
-    body: "Your CPU handles game logic, physics calculations, and background tasks. Intel's 14th-gen processors offer excellent gaming performance with hybrid architecture, while AMD Ryzen 7000-series CPUs provide strong multi-threaded performance and platform longevity.",
-  },
-  {
-    title: "Memory & Storage Essentials",
-    body: "DDR5 RAM is now the standard for new builds, offering higher speeds (5600MHz+) and better performance headroom. 16GB is the minimum for gaming, while 32GB provides headroom for multitasking and content creation. NVMe Gen4 SSDs deliver excellent performance at reasonable prices.",
-  },
-];
-
 export default async function PcComponentsPage() {
   const [categories, locale] = await Promise.all([api.categories.roots(), getLocale()]);
   const t = getDict(locale);
@@ -36,11 +17,9 @@ export default async function PcComponentsPage() {
         </nav>
 
         <div className="flex flex-col gap-4 max-w-[896px]">
-          <h1 className="text-5xl font-bold text-white tracking-[-0.96px] leading-[48px]">PC Components</h1>
-          <p className="text-[32px] font-normal text-[#a0a0a0] leading-[44.8px]">Premium parts for your custom build</p>
-          <p className="text-base font-normal text-[#a0a0a0] leading-[26px] text-justify">
-            {"Build your dream gaming PC with high-performance components from industry-leading manufacturers. Whether you're upgrading your existing system or building from scratch, KRYPTA offers genuine PC hardware including the latest graphics cards, processors, motherboards, RAM, storage solutions, and cooling systems—all backed by manufacturer warranties and expert support in Tunisia."}
-          </p>
+          <h1 className="text-5xl font-bold text-white tracking-[-0.96px] leading-[48px]">{t.products_page.title}</h1>
+          <p className="text-[32px] font-normal text-[#a0a0a0] leading-[44.8px]">{t.products_page.subtitle}</p>
+          <p className="text-base font-normal text-[#a0a0a0] leading-[26px] text-justify">{t.products_page.description}</p>
         </div>
       </div>
 
@@ -64,11 +43,11 @@ export default async function PcComponentsPage() {
           className="text-[36px] font-bold tracking-[-0.36px] bg-clip-text text-transparent"
           style={{ backgroundImage: GRADIENT }}
         >
-          PC Components Buying Guide
+          {t.products_page.guideTitle}
         </h2>
 
         <div className="flex flex-col gap-10">
-          {BUYING_GUIDE.map(({ title, body }) => (
+          {t.products_page.guide.map(({ title, body }) => (
             <div key={title} className="flex flex-col gap-4">
               <h3 className="text-5xl font-medium text-white leading-[64px]">{title}</h3>
               <p className="text-base font-normal text-[#a0a0a0] leading-[26px] text-justify">{body}</p>
@@ -82,10 +61,10 @@ export default async function PcComponentsPage() {
         >
           <div className="flex flex-col gap-4">
             <h3 className="text-5xl font-bold text-white leading-[64px]">
-              Need Help Choosing Compatible Components?
+              {t.products_page.compatibilityTitle}
             </h3>
             <p className="text-base font-normal text-[#a0a0a0] leading-6 text-justify max-w-[1079px]">
-              Component compatibility is crucial — motherboards must match your CPU socket, RAM type, and power supply wattage must support your GPU. Use our PC configurator for automatic compatibility checking or consult with our expert team for personalized recommendations.
+              {t.products_page.compatibilityBody}
             </p>
           </div>
           <a
@@ -93,7 +72,7 @@ export default async function PcComponentsPage() {
             className="self-start h-[51px] px-6 rounded-2xl flex items-center gap-3 text-[#0a0a0a] text-base font-medium"
             style={{ background: GRADIENT }}
           >
-            Get Expert Help →
+            {t.products_page.getExpertHelp}
           </a>
         </div>
       </div>

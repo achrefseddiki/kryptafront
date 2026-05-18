@@ -1,4 +1,5 @@
 import { ASSETS } from "../lib/assets";
+import { getLocale, getDict } from "../lib/i18n";
 
 const OFFERS = [
   ASSETS.offer1,
@@ -11,7 +12,10 @@ const OFFERS = [
   ASSETS.offer8,
 ];
 
-export default function BlogOffersSection() {
+export default async function BlogOffersSection() {
+  const locale = await getLocale();
+  const t = getDict(locale);
+
   return (
     <section className="flex gap-5 overflow-x-auto scrollbar-hide px-24 pb-2">
       {OFFERS.map((src, i) => (
@@ -24,7 +28,7 @@ export default function BlogOffersSection() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent z-10" />
           <img src={src} alt="" className="w-full h-full object-contain" />
           <button className="absolute bottom-3 right-3 z-20 bg-[rgba(255,255,255,0.31)] border-2 border-white text-white text-xs font-semibold px-3 py-2 rounded-[6px] hover:bg-white/40 transition-colors">
-            Voir l&apos;offre
+            {t.home.offers.viewOffer}
           </button>
         </a>
       ))}

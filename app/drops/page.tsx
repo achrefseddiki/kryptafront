@@ -1,13 +1,9 @@
 import PageWrapper from "../components/PageWrapper";
 import { GRADIENT } from "../lib/assets";
 import { api } from "../lib/api";
+import { getLocale, getDict } from "../lib/i18n";
 import type { Drop } from "../lib/types";
-
-const STATUS_CONFIG = {
-  live: { label: "Live Now", color: "text-green-400", dot: "bg-green-400" },
-  sold_out: { label: "Sold Out", color: "text-red-400", dot: "bg-red-400" },
-  upcoming: { label: "Coming Soon", color: "text-[#00f5ff]", dot: "bg-[#00f5ff]" },
-};
+import type { Locale } from "../lib/i18n-dict";
 
 function formatCountdown(endsAt: string): string {
   const diff = new Date(endsAt).getTime() - Date.now();
@@ -19,22 +15,27 @@ function formatCountdown(endsAt: string): string {
 }
 
 export default async function DropsPage() {
-  const drops: Drop[] = await api.drops.list();
+  const [drops, locale]: [Drop[], Locale] = await Promise.all([api.drops.list(), getLocale()]);
+  const t = getDict(locale);
+
+  const STATUS_CONFIG = {
+    live: { label: t.drops.live, color: "text-green-400", dot: "bg-green-400" },
+    sold_out: { label: t.drops.soldOut, color: "text-red-400", dot: "bg-red-400" },
+    upcoming: { label: t.drops.upcoming, color: "text-[#00f5ff]", dot: "bg-[#00f5ff]" },
+  };
 
   return (
     <PageWrapper>
       <div className="px-24 pb-16 flex flex-col gap-10">
         <nav className="flex items-center gap-2 text-sm text-[#a0a0a0]">
-          <a href="/" className="hover:text-white transition-colors">Home</a>
+          <a href="/" className="hover:text-white transition-colors">{t.products.home}</a>
           <span className="text-white/20">/</span>
-          <span className="text-white">Krypta Drops</span>
+          <span className="text-white">{t.drops.breadcrumb}</span>
         </nav>
 
         <div className="flex flex-col gap-4">
-          <h1 className="text-5xl font-bold text-white tracking-[-0.96px]">Krypta Drops</h1>
-          <p className="text-2xl font-normal text-[#a0a0a0] max-w-[700px]">
-            Limited edition releases and exclusive collaborations. Once they&apos;re gone, they&apos;re gone.
-          </p>
+          <h1 className="text-5xl font-bold text-white tracking-[-0.96px]">{t.drops.title}</h1>
+          <p className="text-2xl font-normal text-[#a0a0a0] max-w-[700px]">{t.drops.subtitle}</p>
         </div>
 
         <div className="grid grid-cols-2 gap-6">
@@ -66,7 +67,7 @@ export default async function DropsPage() {
 
                   <div className="flex flex-col gap-2">
                     <div className="flex justify-between text-xs text-[#a0a0a0]">
-                      <span>{total - available} / {total} claimed</span>
+                      <span>{total - available} / {total} {t.drops.claimed}</span>
                       <span>{pct}%</span>
                     </div>
                     <div className="h-1.5 bg-[rgba(255,255,255,0.08)] rounded-full overflow-hidden">
@@ -88,7 +89,7 @@ export default async function DropsPage() {
                       }`}
                       style={status === "live" ? { background: GRADIENT } : {}}
                     >
-                      {status === "live" ? "Claim Now" : status === "sold_out" ? "Sold Out" : "Notify Me"}
+                      {status === "live" ? t.drops.claimNow : status === "sold_out" ? t.drops.soldOut : t.drops.notifyMe}
                     </button>
                   </div>
                 </div>
@@ -101,21 +102,19 @@ export default async function DropsPage() {
           className="rounded-2xl p-10 border border-[rgba(1,245,255,0.2)] flex flex-col items-center gap-6 text-center"
           style={{ background: "linear-gradient(90deg, rgba(1,245,255,0.08), rgba(30,58,255,0.08))" }}
         >
-          <h2 className="text-white text-[32px] font-bold">Never Miss a Drop</h2>
-          <p className="text-[#a0a0a0] text-base max-w-[500px]">
-            Join the KRYPTA community and get notified first when new drops go live.
-          </p>
+          <h2 className="text-white text-[32px] font-bold">{t.drops.newsletter.title}</h2>
+          <p className="text-[#a0a0a0] text-base max-w-[500px]">{t.drops.newsletter.subtitle}</p>
           <div className="flex gap-3 w-full max-w-[480px]">
             <input
               type="email"
-              placeholder="Your email address"
+              placeholder={t.drops.newsletter.placeholder}
               className="flex-1 bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-2xl px-5 py-3.5 text-white text-sm placeholder:text-[#a0a0a0] outline-none focus:border-[#00f5ff] transition-colors"
             />
             <button
               className="h-[52px] px-6 rounded-2xl text-[#0a0a0a] text-base font-medium whitespace-nowrap"
               style={{ background: GRADIENT }}
             >
-              Notify Me
+              {t.drops.newsletter.cta}
             </button>
           </div>
         </div>

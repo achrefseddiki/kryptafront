@@ -1,6 +1,10 @@
 import { ASSETS, GRADIENT } from "../lib/assets";
+import { getLocale, getDict } from "../lib/i18n";
 
-export default function HeroSection() {
+export default async function HeroSection() {
+  const locale = await getLocale();
+  const t = getDict(locale);
+
   return (
     <section className="px-24 flex flex-col gap-5">
       {/* Main hero banner */}
@@ -12,16 +16,16 @@ export default function HeroSection() {
           {/* Heading */}
           <div className="flex flex-col gap-2.5 items-center text-center w-full">
             <h1 className="text-[58px] font-bold leading-[69px] tracking-[-1.44px]">
-              <span className="text-white block">Best Gaming PCs</span>
+              <span className="text-white block">{t.home.hero.title1}</span>
               <span
                 className="block bg-clip-text text-transparent"
                 style={{ backgroundImage: GRADIENT }}
               >
-                {"& PC Components in Tunisia"}
+                {t.home.hero.title2}
               </span>
             </h1>
             <p className="text-[#a0a0a0] text-[26px] font-normal leading-[38.8px] max-w-[731px]">
-              Build your ultimate gaming setup with high performance PCs, components, and gaming peripherals in Tunisia.
+              {t.home.hero.subtitle}
             </p>
           </div>
 
@@ -35,14 +39,14 @@ export default function HeroSection() {
                 filter: "drop-shadow(0px 10px 7.5px rgba(1,245,255,0.2)) drop-shadow(0px 4px 3px rgba(1,245,255,0.2))",
               }}
             >
-              Build Your PC
+              {t.home.hero.buildPC}
               <img src={ASSETS.iconArrowRight} alt="" className="size-5" />
             </a>
             <a
               href="/products"
               className="h-[59px] px-8 rounded-2xl flex items-center border-[1.6px] border-[#00f5ff] text-[#00f5ff] text-base font-medium whitespace-nowrap hover:bg-[#00f5ff]/10 transition-colors"
             >
-              Explore Products
+              {t.home.hero.exploreProducts}
             </a>
           </div>
         </div>
@@ -53,7 +57,7 @@ export default function HeroSection() {
         {[1, 2].map((i) => (
           <div key={i} className="flex-1 h-[236px] rounded-[13px] overflow-hidden relative bg-[#625858]">
             <button className="absolute bottom-4 right-4 bg-[rgba(255,255,255,0.31)] border-2 border-white text-white text-sm font-semibold px-3 py-2.5 rounded-[6px] hover:bg-white/40 transition-colors">
-              Je découvre !
+              {t.home.hero.discover}
             </button>
           </div>
         ))}

@@ -1,4 +1,5 @@
 import { ASSETS } from "../lib/assets";
+import { getLocale, getDict } from "../lib/i18n";
 
 const BUILDS = [
   { title: "KRYPTA RTX 5090 Build", price: "$4,999", img: ASSETS.productRtx5090 },
@@ -8,16 +9,19 @@ const BUILDS = [
   { title: "Dual Monitor Setup Kit", price: "$899", img: ASSETS.productDualMonitor },
 ];
 
-export default function PCBuildsSection() {
+export default async function PCBuildsSection() {
+  const locale = await getLocale();
+  const t = getDict(locale);
+
   return (
     <section className="px-24 flex flex-col gap-5">
       {/* Heading row */}
       <div className="flex items-center justify-between">
         <h2 className="text-[36px] font-medium text-white tracking-[-0.36px] leading-10 whitespace-nowrap">
-          Best Gaming PC Builds in Tunisia
+          {t.home.builds.heading}
         </h2>
         <a href="/builds" className="flex items-center gap-1 text-[#00f5ff] text-base font-normal">
-          View All
+          {t.home.builds.viewAll}
           <img src={ASSETS.iconArrowSmall} alt="" className="size-4" />
         </a>
       </div>

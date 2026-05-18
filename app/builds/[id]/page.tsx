@@ -1,5 +1,6 @@
 import PageWrapper from "../../components/PageWrapper";
 import { GRADIENT, ASSETS } from "../../lib/assets";
+import { getLocale, getDict } from "../../lib/i18n";
 
 const BUILDS = [
   {
@@ -85,6 +86,8 @@ export default async function BuildDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const locale = await getLocale();
+  const t = getDict(locale);
   const build = BUILDS.find((b) => b.id === id) ?? BUILDS[0];
   const maxFps = Math.max(...build.benchmarks.map((b) => b.fps));
 
@@ -93,9 +96,9 @@ export default async function BuildDetailPage({
       <div className="px-24 pb-16 flex flex-col gap-12">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-[#a0a0a0]">
-          <a href="/" className="hover:text-white transition-colors">Home</a>
+          <a href="/" className="hover:text-white transition-colors">{t.products.home}</a>
           <span className="text-white/20">/</span>
-          <a href="/products" className="hover:text-white transition-colors">Gaming PCs</a>
+          <a href="/products" className="hover:text-white transition-colors">{t.builds_detail.gamingPCs}</a>
           <span className="text-white/20">/</span>
           <span className="text-white">{build.name}</span>
         </nav>
@@ -131,7 +134,7 @@ export default async function BuildDetailPage({
                 {[1,2,3,4,5].map((s) => (
                   <span key={s} className="text-[#00f5ff] text-lg">★</span>
                 ))}
-                <span className="text-[#a0a0a0] text-sm ml-1">({REVIEWS.length} reviews)</span>
+                <span className="text-[#a0a0a0] text-sm ml-1">({REVIEWS.length} {t.builds_detail.reviews})</span>
               </div>
             </div>
 
@@ -153,8 +156,8 @@ export default async function BuildDetailPage({
             {/* Stock */}
             <div className="flex items-center gap-2">
               <span className="size-2 rounded-full bg-green-400" />
-              <span className="text-green-400 text-sm font-medium">In Stock</span>
-              <span className="text-[#a0a0a0] text-sm">— Built to order, ships in 3–5 days</span>
+              <span className="text-green-400 text-sm font-medium">{t.builds_detail.inStock}</span>
+              <span className="text-[#a0a0a0] text-sm">— {t.builds_detail.shipsIn}</span>
             </div>
 
             {/* CTAs */}
@@ -164,22 +167,22 @@ export default async function BuildDetailPage({
                 className="flex-1 h-[52px] rounded-2xl flex items-center justify-center text-[#0a0a0a] text-base font-medium"
                 style={{ background: GRADIENT, filter: "drop-shadow(0px 6px 6px rgba(1,245,255,0.2))" }}
               >
-                Buy This Build
+                {t.builds_detail.buy}
               </a>
               <a
                 href="/builder"
                 className="h-[52px] px-6 rounded-2xl flex items-center border-[1.6px] border-[#00f5ff] text-[#00f5ff] text-base font-medium hover:bg-[#00f5ff]/10 transition-colors"
               >
-                Customize It
+                {t.builds_detail.customize}
               </a>
             </div>
 
             {/* Guarantees */}
             <div className="grid grid-cols-3 gap-4 pt-4 border-t border-[rgba(255,255,255,0.08)]">
               {[
-                { label: "2-Year Warranty", icon: "🛡️" },
-                { label: "Free Delivery", icon: "🚚" },
-                { label: "Expert Support", icon: "💬" },
+                { label: t.builds_detail.warranty, icon: "🛡️" },
+                { label: t.builds_detail.freeDelivery, icon: "🚚" },
+                { label: t.builds_detail.expertSupport, icon: "💬" },
               ].map(({ label, icon }) => (
                 <div key={label} className="flex flex-col items-center gap-1 text-center">
                   <span className="text-2xl">{icon}</span>
@@ -194,7 +197,7 @@ export default async function BuildDetailPage({
         <div className="grid grid-cols-3 gap-6">
           {/* Full specs */}
           <div className="col-span-1 bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-6 flex flex-col gap-5">
-            <h2 className="text-white text-xl font-medium">Full Specifications</h2>
+            <h2 className="text-white text-xl font-medium">{t.builds_detail.fullSpecs}</h2>
             <div className="flex flex-col gap-3">
               {build.specs.map(({ label, value }) => (
                 <div key={label} className="flex justify-between text-sm gap-4">
@@ -207,7 +210,7 @@ export default async function BuildDetailPage({
 
           {/* Benchmarks */}
           <div className="col-span-1 bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-6 flex flex-col gap-5">
-            <h2 className="text-white text-xl font-medium">Performance Benchmarks</h2>
+            <h2 className="text-white text-xl font-medium">{t.builds_detail.benchmarks}</h2>
             <div className="flex flex-col gap-5">
               {build.benchmarks.map(({ game, fps }) => (
                 <div key={game} className="flex flex-col gap-2">
@@ -228,7 +231,7 @@ export default async function BuildDetailPage({
 
           {/* What's included */}
           <div className="col-span-1 bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-6 flex flex-col gap-5">
-            <h2 className="text-white text-xl font-medium">What&apos;s Included</h2>
+            <h2 className="text-white text-xl font-medium">{t.builds_detail.whatsIncluded}</h2>
             <div className="flex flex-col gap-3">
               {build.features.map((feat) => (
                 <div key={feat} className="flex items-start gap-3">
@@ -247,14 +250,14 @@ export default async function BuildDetailPage({
               className="mt-auto h-12 rounded-2xl flex items-center justify-center text-[#0a0a0a] text-base font-medium"
               style={{ background: GRADIENT }}
             >
-              Buy This Build
+              {t.builds_detail.buy}
             </a>
           </div>
         </div>
 
         {/* Reviews */}
         <div className="flex flex-col gap-6">
-          <h2 className="text-white text-2xl font-medium">Customer Reviews</h2>
+          <h2 className="text-white text-2xl font-medium">{t.builds_detail.customerReviews}</h2>
           <div className="flex flex-col gap-4">
             {REVIEWS.map(({ author, rating, date, body }) => (
               <div key={author} className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-6 flex flex-col gap-3">
@@ -277,7 +280,7 @@ export default async function BuildDetailPage({
 
         {/* Related builds */}
         <div className="flex flex-col gap-6 pt-4 border-t border-[rgba(255,255,255,0.08)]">
-          <h2 className="text-white text-2xl font-medium">Other Builds</h2>
+          <h2 className="text-white text-2xl font-medium">{t.builds_detail.otherBuilds}</h2>
           <div className="flex gap-6">
             {RELATED_BUILDS.map(({ id: bid, name, price, badge, img }) => (
               <a
@@ -299,7 +302,7 @@ export default async function BuildDetailPage({
                     <h3 className="text-white text-base font-medium">{name}</h3>
                     <span className="text-white text-xl font-bold">${price.toLocaleString()}</span>
                   </div>
-                  <span className="text-[#00f5ff] text-sm font-medium">View →</span>
+                  <span className="text-[#00f5ff] text-sm font-medium">{t.builds_detail.view}</span>
                 </div>
               </a>
             ))}

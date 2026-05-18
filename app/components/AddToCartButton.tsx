@@ -15,7 +15,7 @@ export default function AddToCartButton({ product }: Props) {
   const [added, setAdded] = useState(false);
 
   function handleClick() {
-    addToCart({ ...product, qty: 1 });
+    addToCart(product);
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   }

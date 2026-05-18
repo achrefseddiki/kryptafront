@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import PageWrapper from "../../../components/PageWrapper";
 import { GRADIENT } from "../../../lib/assets";
 import { api } from "../../../lib/api";
+import { getLocale, getDict } from "../../../lib/i18n";
 import AddToCartButton from "../../../components/AddToCartButton";
 
 export default async function ProductDetailPage({
@@ -11,12 +12,12 @@ export default async function ProductDetailPage({
 }) {
   const { category, id } = await params;
 
-  let product;
-  try {
-    product = await api.products.getBySlug(id);
-  } catch {
-    notFound();
-  }
+  const [locale, product] = await Promise.all([
+    getLocale(),
+    api.products.getBySlug(id).catch(() => null),
+  ]);
+  if (!product) notFound();
+  const t = getDict(locale);
 
   const reviews = await api.products.reviews(product.id).catch(() => []);
 
@@ -24,9 +25,9 @@ export default async function ProductDetailPage({
     <PageWrapper>
       <div className="px-24 flex flex-col gap-10">
         <nav className="flex items-center gap-2 text-sm text-[#a0a0a0]">
-          <a href="/" className="hover:text-white transition-colors">Home</a>
+          <a href="/" className="hover:text-white transition-colors">{t.products.home}</a>
           <span className="text-white/20">/</span>
-          <a href="/products" className="hover:text-white transition-colors">PC Components</a>
+          <a href="/products" className="hover:text-white transition-colors">{t.product_detail.pcComponents}</a>
           <span className="text-white/20">/</span>
           <a href={`/products/${category}`} className="capitalize hover:text-white transition-colors">{category}</a>
           <span className="text-white/20">/</span>
@@ -55,7 +56,7 @@ export default async function ProductDetailPage({
                 {[1,2,3,4,5].map((s) => (
                   <span key={s} className="text-[#00f5ff] text-lg">★</span>
                 ))}
-                <span className="text-[#a0a0a0] text-sm ml-1">({reviews.length} reviews)</span>
+                <span className="text-[#a0a0a0] text-sm ml-1">({reviews.length} {t.product_detail.reviews})</span>
               </div>
             </div>
 
@@ -77,9 +78,9 @@ export default async function ProductDetailPage({
             <div className="flex items-center gap-2">
               <span className={`size-2 rounded-full ${product.inStock ? 'bg-green-400' : 'bg-red-400'}`} />
               <span className={`text-sm font-medium ${product.inStock ? 'text-green-400' : 'text-red-400'}`}>
-                {product.inStock ? 'In Stock' : 'Out of Stock'}
+                {product.inStock ? t.product_detail.inStock : t.product_detail.outOfStock}
               </span>
-              {product.inStock && <span className="text-[#a0a0a0] text-sm">— Ready to ship</span>}
+              {product.inStock && <span className="text-[#a0a0a0] text-sm">— {t.product_detail.readyToShip}</span>}
             </div>
 
             <div className="flex items-center gap-4">
@@ -88,15 +89,15 @@ export default async function ProductDetailPage({
                 href="/builder"
                 className="h-[52px] px-6 rounded-2xl flex items-center border-[1.6px] border-[#00f5ff] text-[#00f5ff] text-base font-medium hover:bg-[#00f5ff]/10 transition-colors"
               >
-                Add to Build
+                {t.product_detail.addToBuild}
               </a>
             </div>
 
             <div className="grid grid-cols-3 gap-4 pt-4 border-t border-[rgba(255,255,255,0.08)]">
               {[
-                { label: "2-Year Warranty", icon: "🛡️" },
-                { label: "Free Delivery", icon: "🚚" },
-                { label: "Expert Support", icon: "💬" },
+                { label: t.product_detail.warranty, icon: "🛡️" },
+                { label: t.product_detail.freeDelivery, icon: "🚚" },
+                { label: t.product_detail.expertSupport, icon: "💬" },
               ].map(({ label, icon }) => (
                 <div key={label} className="flex flex-col items-center gap-1 text-center">
                   <span className="text-2xl">{icon}</span>
@@ -109,7 +110,7 @@ export default async function ProductDetailPage({
 
         <div className="flex flex-col gap-8 pb-16">
           <div className="flex gap-8 border-b border-[rgba(255,255,255,0.08)]">
-            {["Description", "Specifications", "Reviews"].map((tab, i) => (
+            {[t.product_detail.description, t.product_detail.specifications, t.product_detail.reviewsTab].map((tab, i) => (
               <button
                 key={tab}
                 className={`pb-4 text-base font-medium transition-colors relative ${
@@ -137,9 +138,9 @@ export default async function ProductDetailPage({
           </div>
 
           <div className="flex flex-col gap-6 mt-4">
-            <h3 className="text-white text-2xl font-medium">Customer Reviews</h3>
+            <h3 className="text-white text-2xl font-medium">{t.product_detail.customerReviews}</h3>
             {reviews.length === 0 ? (
-              <p className="text-[#a0a0a0]">No reviews yet.</p>
+              <p className="text-[#a0a0a0]">{t.product_detail.noReviews}</p>
             ) : (
               reviews.map(({ id: rid, author, rating, body, createdAt }) => (
                 <div key={rid} className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-6 flex flex-col gap-3">
@@ -153,7 +154,7 @@ export default async function ProductDetailPage({
                       </div>
                     </div>
                     <span className="text-[#a0a0a0] text-sm">
-                      {new Date(createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      {new Date(createdAt).toLocaleDateString(t.dateLocale, { month: 'short', day: 'numeric', year: 'numeric' })}
                     </span>
                   </div>
                   <p className="text-[#a0a0a0] text-sm leading-6">{body}</p>

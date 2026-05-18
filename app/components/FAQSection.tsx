@@ -2,18 +2,10 @@
 
 import { useState } from "react";
 import { ASSETS } from "../lib/assets";
-
-const FAQS = [
-  { q: "What is the best gaming PC in Tunisia?", a: null },
-  { q: "Where can I buy gaming peripherals in Tunisia?", a: null },
-  { q: "What components do I need for a gaming setup?", a: null },
-  {
-    q: "Does Krypta offer custom PC builds?",
-    a: "Yes, Krypta allows you to build your own gaming PC based on your needs. Use our KryptaBar configurator for guided component selection with real-time compatibility checking, or submit a custom request for our experts to design a personalized build for you.",
-  },
-];
+import { useT } from "../lib/language-context";
 
 export default function FAQSection() {
+  const t = useT();
   const [openIndex, setOpenIndex] = useState(3);
 
   return (
@@ -22,11 +14,11 @@ export default function FAQSection() {
         {/* Heading + accordion */}
         <div className="flex flex-col gap-8 w-full">
           <h2 className="text-[36px] font-medium text-white tracking-[-0.36px] leading-10 text-center">
-            Frequently Asked Questions
+            {t.home.faq.heading}
           </h2>
 
           <div className="flex flex-col gap-2 w-full">
-            {FAQS.map(({ q, a }, i) => {
+            {t.home.faq.items.map(({ q, a }, i) => {
               const isOpen = openIndex === i;
               return (
                 <div
@@ -60,7 +52,7 @@ export default function FAQSection() {
           href="/support"
           className="h-[51px] px-8 rounded-2xl flex items-center gap-2 border-[1.6px] border-[#00f5ff] text-[#00f5ff] text-base font-medium hover:bg-[#00f5ff]/10 transition-colors"
         >
-          Contact Support
+          {t.home.faq.contactSupport}
           <img src={ASSETS.iconArrowSmall} alt="" className="size-4" />
         </a>
       </div>
