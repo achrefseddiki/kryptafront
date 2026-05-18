@@ -1,6 +1,8 @@
 export interface Category {
   slug: string;
   label: string;
+  parentSlug: string | null;
+  img: string | null;
 }
 
 export interface Product {

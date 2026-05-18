@@ -13,7 +13,7 @@ const SERVICES = [
     icon: ASSETS.iconRepair,
     title: "Krypta Repair",
     desc: "Bring your dream build to life with our expert team",
-    href: "/repair",
+    href: "/lab",
   },
 ];
 

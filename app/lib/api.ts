@@ -11,6 +11,8 @@ async function get<T>(path: string): Promise<T> {
 export const api = {
   categories: {
     list: () => get<Category[]>('/categories'),
+    roots: () => get<Category[]>('/categories?root=true'),
+    children: (parentSlug: string) => get<Category[]>(`/categories?parent=${parentSlug}`),
     get: (slug: string) => get<Category>(`/categories/${slug}`),
   },
   products: {

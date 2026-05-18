@@ -1,9 +1,25 @@
 import { ASSETS } from "../lib/assets";
 
-const FOOTER_LINKS = {
-  Shop: ["Gaming PCs", "Components", "Peripherals", "Streaming Gear"],
-  Krypta: ["Build Your Setup", "Drops", "Custom Requests", "Guides & Articles", "Esports"],
-  "Support & Legal": ["Contact Us", "Shipping", "Privacy Policy", "Terms of Service"],
+const FOOTER_LINKS: Record<string, { label: string; href: string }[]> = {
+  Shop: [
+    { label: "Gaming PCs", href: "#" },
+    { label: "Components", href: "/products" },
+    { label: "Peripherals", href: "#" },
+    { label: "Streaming Gear", href: "#" },
+  ],
+  Krypta: [
+    { label: "Build Your Setup", href: "/builder" },
+    { label: "Drops", href: "/drops" },
+    { label: "Custom Requests", href: "#" },
+    { label: "Guides & Articles", href: "/blog" },
+    { label: "Esports", href: "#" },
+  ],
+  "Support & Legal": [
+    { label: "Contact Us", href: "#" },
+    { label: "Shipping", href: "#" },
+    { label: "Privacy Policy", href: "#" },
+    { label: "Terms of Service", href: "#" },
+  ],
 };
 
 const SOCIAL_ICONS = [
@@ -22,10 +38,10 @@ export default function Footer() {
           <div key={heading} className="flex flex-col gap-4">
             <p className="text-white text-sm font-medium leading-5">{heading}</p>
             <ul className="flex flex-col gap-3">
-              {links.map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-[#a0a0a0] text-sm font-normal leading-5 hover:text-white transition-colors">
-                    {link}
+              {links.map(({ label, href }) => (
+                <li key={label}>
+                  <a href={href} className="text-[#a0a0a0] text-sm font-normal leading-5 hover:text-white transition-colors">
+                    {label}
                   </a>
                 </li>
               ))}

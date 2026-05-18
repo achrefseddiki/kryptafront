@@ -1,6 +1,7 @@
 import PageWrapper from "../components/PageWrapper";
 import { GRADIENT } from "../lib/assets";
 import { api } from "../lib/api";
+import { getLocale, getDict } from "../lib/i18n";
 
 const BUYING_GUIDE = [
   {
@@ -22,15 +23,16 @@ const BUYING_GUIDE = [
 ];
 
 export default async function PcComponentsPage() {
-  const categories = await api.categories.list();
+  const [categories, locale] = await Promise.all([api.categories.roots(), getLocale()]);
+  const t = getDict(locale);
 
   return (
     <PageWrapper>
       <div className="px-24 flex flex-col gap-8">
         <nav className="flex items-center gap-2 text-sm text-[#a0a0a0]">
-          <a href="/" className="hover:text-white transition-colors">Home</a>
+          <a href="/" className="hover:text-white transition-colors">{t.products.home}</a>
           <span className="text-white/20">/</span>
-          <span className="text-white">PC Components</span>
+          <span className="text-white">{t.products.allProducts}</span>
         </nav>
 
         <div className="flex flex-col gap-4 max-w-[896px]">
@@ -44,13 +46,14 @@ export default async function PcComponentsPage() {
 
       <div className="px-24">
         <div className="grid grid-cols-4 gap-6">
-          {categories.map(({ slug, label }) => (
+          {categories.map(({ slug, label, img }) => (
             <a
               key={slug}
               href={`/products/${slug}`}
-              className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl h-[162px] flex flex-col items-center justify-center gap-2 hover:border-[#00f5ff]/50 hover:bg-[#1a1a1a]/80 transition-colors text-center"
+              className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl h-[162px] flex flex-col items-center justify-center gap-3 hover:border-[#00f5ff]/50 hover:bg-[#1a1a1a]/80 transition-colors text-center px-4"
             >
-              <span className="text-5xl font-medium text-white">{label}</span>
+              {img && <img src={img} alt={label} className="size-10 object-contain" />}
+              <span className="text-base font-semibold text-white">{label}</span>
             </a>
           ))}
         </div>

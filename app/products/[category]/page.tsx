@@ -1,39 +1,86 @@
 import PageWrapper from "../../components/PageWrapper";
 import { GRADIENT } from "../../lib/assets";
 import { api } from "../../lib/api";
-
-const CATEGORY_LABELS: Record<string, { title: string; desc: string }> = {
-  gpus: { title: "Graphics Cards (GPUs)", desc: "Power your gaming visuals with the latest NVIDIA and AMD GPUs." },
-  cpus: { title: "Processors (CPUs)", desc: "Intel and AMD processors for every build." },
-  ram: { title: "Memory (RAM)", desc: "DDR5 and DDR4 memory kits from top brands." },
-  storage: { title: "Storage (NVMe & SSD)", desc: "Gen4 and Gen5 NVMe drives for lightning-fast load times." },
-  motherboards: { title: "Motherboards", desc: "Intel and AMD compatible boards for all form factors." },
-  power: { title: "Power Supplies", desc: "80+ Gold and Platinum PSUs to power your build." },
-  cooling: { title: "Cooling", desc: "Air coolers and AIO liquid cooling systems." },
-  cases: { title: "Cases", desc: "ATX, mATX, and ITX cases in every style." },
-};
+import { getLocale, getDict } from "../../lib/i18n";
+import AddToCartButton from "../../components/AddToCartButton";
 
 const BRANDS = ["NVIDIA", "AMD", "Intel", "ASUS", "Gigabyte", "MSI", "Sapphire", "EVGA"];
 
 export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
   const { category } = await params;
-  const meta = CATEGORY_LABELS[category] ?? { title: category.toUpperCase(), desc: "Browse our selection." };
-  const products = await api.products.list(category);
 
+  const [cat, children, products, locale] = await Promise.all([
+    api.categories.get(category).catch(() => null),
+    api.categories.children(category),
+    api.products.list(category),
+    getLocale(),
+  ]);
+  const t = getDict(locale);
+
+  const parentCat = cat?.parentSlug
+    ? await api.categories.get(cat.parentSlug).catch(() => null)
+    : null;
+
+  const label = cat?.label ?? category.replace(/-/g, " ");
+
+  // Root category with sub-categories → show subcategory grid
+  if (children.length > 0) {
+    return (
+      <PageWrapper>
+        <div className="px-24 flex flex-col gap-8">
+          <nav className="flex items-center gap-2 text-sm text-[#a0a0a0]">
+            <a href="/" className="hover:text-white transition-colors">{t.products.home}</a>
+            <span className="text-white/20">/</span>
+            <a href="/products" className="hover:text-white transition-colors">{t.products.allProducts}</a>
+            <span className="text-white/20">/</span>
+            <span className="text-white">{label}</span>
+          </nav>
+
+          <div className="flex flex-col gap-2">
+            <h1 className="text-5xl font-bold text-white tracking-[-0.96px]">{label}</h1>
+            <p className="text-2xl font-normal text-[#a0a0a0]">{t.products.browseByCategory}</p>
+          </div>
+        </div>
+
+        <div className="px-24 pb-16">
+          <div className="grid grid-cols-4 gap-6">
+            {children.map(({ slug, label: childLabel, img }) => (
+              <a
+                key={slug}
+                href={`/products/${slug}`}
+                className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl h-[162px] flex flex-col items-center justify-center gap-3 hover:border-[#00f5ff]/50 hover:bg-[#1a1a1a]/80 transition-colors text-center px-4"
+              >
+                {img && <img src={img} alt={childLabel} className="size-10 object-contain" />}
+                <span className="text-base font-semibold text-white">{childLabel}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </PageWrapper>
+    );
+  }
+
+  // Leaf category → show products
   return (
     <PageWrapper>
       <div className="px-24 flex flex-col gap-6">
         <nav className="flex items-center gap-2 text-sm text-[#a0a0a0]">
-          <a href="/" className="hover:text-white transition-colors">Home</a>
+          <a href="/" className="hover:text-white transition-colors">{t.products.home}</a>
           <span className="text-white/20">/</span>
-          <a href="/products" className="hover:text-white transition-colors">PC Components</a>
+          <a href="/products" className="hover:text-white transition-colors">{t.products.allProducts}</a>
+          {parentCat && (
+            <>
+              <span className="text-white/20">/</span>
+              <a href={`/products/${parentCat.slug}`} className="hover:text-white transition-colors">{parentCat.label}</a>
+            </>
+          )}
           <span className="text-white/20">/</span>
-          <span className="text-white">{meta.title}</span>
+          <span className="text-white">{label}</span>
         </nav>
 
         <div className="flex flex-col gap-2">
-          <h1 className="text-5xl font-bold text-white tracking-[-0.96px]">{meta.title}</h1>
-          <p className="text-2xl font-normal text-[#a0a0a0]">{meta.desc}</p>
+          <h1 className="text-5xl font-bold text-white tracking-[-0.96px]">{label}</h1>
+          <p className="text-2xl font-normal text-[#a0a0a0]">{products.length} {t.products.productsFound}</p>
         </div>
       </div>
 
@@ -41,7 +88,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         <div className="flex gap-8">
           <aside className="w-[240px] shrink-0 flex flex-col gap-8">
             <div className="flex flex-col gap-4">
-              <h3 className="text-white text-sm font-medium uppercase tracking-wider">Price Range</h3>
+              <h3 className="text-white text-sm font-medium uppercase tracking-wider">{t.products.priceRange}</h3>
               <div className="flex flex-col gap-2">
                 {["Under $300", "$300 – $600", "$600 – $1000", "$1000 – $2000", "Over $2000"].map((r) => (
                   <label key={r} className="flex items-center gap-3 cursor-pointer group">
@@ -53,7 +100,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
             </div>
 
             <div className="flex flex-col gap-4">
-              <h3 className="text-white text-sm font-medium uppercase tracking-wider">Brand</h3>
+              <h3 className="text-white text-sm font-medium uppercase tracking-wider">{t.products.brand}</h3>
               <div className="flex flex-col gap-2">
                 {BRANDS.map((b) => (
                   <label key={b} className="flex items-center gap-3 cursor-pointer group">
@@ -68,24 +115,14 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
               className="h-11 rounded-2xl text-[#0a0a0a] text-sm font-medium"
               style={{ background: GRADIENT }}
             >
-              Apply Filters
+              {t.products.applyFilters}
             </button>
           </aside>
 
           <div className="flex-1 flex flex-col gap-6">
-            <div className="flex items-center justify-between">
-              <p className="text-[#a0a0a0] text-sm">{products.length} products found</p>
-              <div className="flex items-center gap-3">
-                <span className="text-[#a0a0a0] text-sm">Sort by:</span>
-                <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-xl px-4 py-2 text-white text-sm">
-                  Featured
-                </div>
-              </div>
-            </div>
-
             {products.length === 0 ? (
               <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-16 text-center">
-                <p className="text-[#a0a0a0] text-lg">No products found in this category yet.</p>
+                <p className="text-[#a0a0a0] text-lg">{t.products.noProducts}</p>
               </div>
             ) : (
               <div className="grid grid-cols-3 gap-6">
@@ -122,12 +159,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
                         <span className="text-white text-xl font-bold">${price.toLocaleString()}</span>
                         {oldPrice && <span className="text-[#a0a0a0] text-sm line-through">${oldPrice.toLocaleString()}</span>}
                       </div>
-                      <button
-                        className="w-full h-10 rounded-xl text-[#0a0a0a] text-sm font-medium"
-                        style={{ background: GRADIENT }}
-                      >
-                        Add to Cart
-                      </button>
+                      <AddToCartButton product={{ id, slug, name, price, img }} />
                     </div>
                   </a>
                 ))}

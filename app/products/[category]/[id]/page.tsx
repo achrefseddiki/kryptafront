@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import PageWrapper from "../../../components/PageWrapper";
 import { GRADIENT } from "../../../lib/assets";
 import { api } from "../../../lib/api";
+import AddToCartButton from "../../../components/AddToCartButton";
 
 export default async function ProductDetailPage({
   params,
@@ -82,18 +83,7 @@ export default async function ProductDetailPage({
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="flex items-center bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-xl">
-                <button className="w-11 h-11 flex items-center justify-center text-white text-xl hover:text-[#00f5ff] transition-colors">−</button>
-                <span className="text-white text-base font-medium px-4">1</span>
-                <button className="w-11 h-11 flex items-center justify-center text-white text-xl hover:text-[#00f5ff] transition-colors">+</button>
-              </div>
-              <a
-                href="/cart"
-                className="flex-1 h-[52px] rounded-2xl flex items-center justify-center text-[#0a0a0a] text-base font-medium"
-                style={{ background: GRADIENT, filter: "drop-shadow(0px 6px 6px rgba(1,245,255,0.2))" }}
-              >
-                Add to Cart
-              </a>
+              <AddToCartButton product={{ id: product.id, slug: id, name: product.name, price: product.price, img: product.img }} />
               <a
                 href="/builder"
                 className="h-[52px] px-6 rounded-2xl flex items-center border-[1.6px] border-[#00f5ff] text-[#00f5ff] text-base font-medium hover:bg-[#00f5ff]/10 transition-colors"

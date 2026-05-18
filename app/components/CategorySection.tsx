@@ -1,10 +1,10 @@
 import { ASSETS } from "../lib/assets";
 
 const CATEGORIES = [
-  { title: "Gaming PCs", desc: "Pre-built and custom systems", img: ASSETS.catGamingPCs },
-  { title: "Components", desc: "GPUs, CPUs, RAM & more", img: ASSETS.catComponents },
-  { title: "Components", desc: "GPUs, CPUs, RAM & more", img: ASSETS.catComponents },
-  { title: "Peripherals", desc: "Keyboards, mice, headsets", img: ASSETS.catPeripherals },
+  { title: "Gaming PCs", desc: "Pre-built and custom systems", img: ASSETS.catGamingPCs, href: "#" },
+  { title: "Components", desc: "GPUs, CPUs, RAM & more", img: ASSETS.catComponents, href: "/products" },
+  { title: "Components", desc: "GPUs, CPUs, RAM & more", img: ASSETS.catComponents, href: "/products" },
+  { title: "Peripherals", desc: "Keyboards, mice, headsets", img: ASSETS.catPeripherals, href: "#" },
 ];
 
 export default function CategorySection() {
@@ -14,10 +14,10 @@ export default function CategorySection() {
         {"Explore Gaming PCs, Components & Peripherals"}
       </h2>
       <div className="flex gap-6 justify-center">
-        {CATEGORIES.map(({ title, desc, img }, i) => (
+        {CATEGORIES.map(({ title, desc, img, href }, i) => (
           <a
             key={i}
-            href="#"
+            href={href}
             className="w-[261px] bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl overflow-hidden hover:border-[rgba(255,255,255,0.2)] transition-colors"
           >
             <div className="w-full h-[259px] overflow-hidden">

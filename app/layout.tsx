@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import { CartProvider } from "./lib/cart-context";
+import { AuthProvider } from "./lib/auth-context";
+import { LanguageProvider } from "./lib/language-context";
+import { getLocale } from "./lib/i18n";
+import Navbar from "./components/Navbar";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -14,13 +19,22 @@ export const metadata: Metadata = {
     "Tunisia's leading platform for high-performance gaming PCs, premium PC components, and professional gaming peripherals.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const locale = await getLocale();
+
   return (
-    <html lang="en" className={spaceGrotesk.className}>
-      <body className="min-h-full flex flex-col bg-[#0a0a0a] text-white antialiased">
-        {children}
+    <html lang={locale} className={spaceGrotesk.className}>
+      <body className="min-h-screen flex flex-col bg-[#0a0a0a] text-white antialiased">
+        <LanguageProvider initial={locale}>
+          <AuthProvider>
+            <CartProvider>
+              <Navbar />
+              {children}
+            </CartProvider>
+          </AuthProvider>
+        </LanguageProvider>
       </body>
     </html>
   );
