@@ -46,6 +46,11 @@ const fr = {
     sortBy: "Trier par",
     featured: "Tendance",
     noProducts: "Aucun produit dans cette catégorie pour l'instant.",
+    priceRanges: ["Moins de 300 DT", "300 – 600 DT", "600 – 1 000 DT", "1 000 – 2 000 DT", "Plus de 2 000 DT"],
+    searchPlaceholder: "Rechercher des produits...",
+    clearFilters: "Effacer les filtres",
+    previous: "Précédent",
+    next: "Suivant",
   },
   auth_pages: {
     welcomeBack: "Bon retour",
@@ -415,6 +420,11 @@ const en: typeof fr = {
     sortBy: "Sort by",
     featured: "Featured",
     noProducts: "No products found in this category yet.",
+    priceRanges: ["Under 300 DT", "300 – 600 DT", "600 – 1,000 DT", "1,000 – 2,000 DT", "Over 2,000 DT"],
+    searchPlaceholder: "Search products...",
+    clearFilters: "Clear Filters",
+    previous: "Previous",
+    next: "Next",
   },
   auth_pages: {
     welcomeBack: "Welcome back",

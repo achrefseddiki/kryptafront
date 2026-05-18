@@ -138,7 +138,7 @@ export default async function BuildDetailPage({
               </div>
             </div>
 
-            <span className="text-[40px] font-bold text-white">${build.price.toLocaleString()}</span>
+            <span className="text-[40px] font-bold text-white">{build.price.toLocaleString()} DT</span>
 
             {/* Key specs */}
             <div className="grid grid-cols-2 gap-3">
@@ -300,7 +300,7 @@ export default async function BuildDetailPage({
                 <div className="p-5 flex items-center justify-between">
                   <div>
                     <h3 className="text-white text-base font-medium">{name}</h3>
-                    <span className="text-white text-xl font-bold">${price.toLocaleString()}</span>
+                    <span className="text-white text-xl font-bold">{price.toLocaleString()} DT</span>
                   </div>
                   <span className="text-[#00f5ff] text-sm font-medium">{t.builds_detail.view}</span>
                 </div>

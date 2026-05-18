@@ -61,9 +61,9 @@ export default async function ProductDetailPage({
             </div>
 
             <div className="flex items-center gap-4">
-              <span className="text-[40px] font-bold text-white">${product.price.toLocaleString()}</span>
+              <span className="text-[40px] font-bold text-white">{product.price.toLocaleString()} DT</span>
               {product.oldPrice && (
-                <span className="text-[#a0a0a0] text-xl line-through">${product.oldPrice.toLocaleString()}</span>
+                <span className="text-[#a0a0a0] text-xl line-through">{product.oldPrice.toLocaleString()} DT</span>
               )}
             </div>
 

@@ -79,7 +79,7 @@ export default async function DropsPage() {
                   </div>
 
                   <div className="flex items-center justify-between mt-1">
-                    <span className="text-white text-2xl font-bold">${price}</span>
+                    <span className="text-white text-2xl font-bold">{price} DT</span>
                     <button
                       disabled={status !== "live"}
                       className={`h-11 px-6 rounded-2xl text-base font-medium transition-colors ${

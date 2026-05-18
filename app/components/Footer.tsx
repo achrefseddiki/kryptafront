@@ -1,5 +1,7 @@
+"use client";
+
 import { ASSETS } from "../lib/assets";
-import { getLocale, getDict } from "../lib/i18n";
+import { useT } from "../lib/language-context";
 
 const SOCIAL_ICONS = [
   ASSETS.iconSocial1,
@@ -8,9 +10,8 @@ const SOCIAL_ICONS = [
   ASSETS.iconSocial4,
 ];
 
-export default async function Footer() {
-  const locale = await getLocale();
-  const t = getDict(locale);
+export default function Footer() {
+  const t = useT();
 
   return (
     <footer className="border-t border-black pt-5 pb-7 px-24 flex flex-col items-center gap-10">

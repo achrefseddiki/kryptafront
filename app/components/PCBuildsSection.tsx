@@ -2,11 +2,11 @@ import { ASSETS } from "../lib/assets";
 import { getLocale, getDict } from "../lib/i18n";
 
 const BUILDS = [
-  { title: "KRYPTA RTX 5090 Build", price: "$4,999", img: ASSETS.productRtx5090 },
-  { title: "Professional Gaming Mouse", price: "$149", img: ASSETS.productGamingMouse },
-  { title: "Dual Monitor Setup Kit", price: "$899", img: ASSETS.productDualMonitor },
-  { title: "KRYPTA RTX 5090 Build", price: "$4,999", img: ASSETS.productRtx5090 },
-  { title: "Dual Monitor Setup Kit", price: "$899", img: ASSETS.productDualMonitor },
+  { title: "KRYPTA RTX 5090 Build", price: "4 999 DT", img: ASSETS.productRtx5090 },
+  { title: "Professional Gaming Mouse", price: "149 DT", img: ASSETS.productGamingMouse },
+  { title: "Dual Monitor Setup Kit", price: "899 DT", img: ASSETS.productDualMonitor },
+  { title: "KRYPTA RTX 5090 Build", price: "4 999 DT", img: ASSETS.productRtx5090 },
+  { title: "Dual Monitor Setup Kit", price: "899 DT", img: ASSETS.productDualMonitor },
 ];
 
 export default async function PCBuildsSection() {

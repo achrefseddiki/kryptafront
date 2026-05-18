@@ -39,7 +39,7 @@ export default function CartPage() {
                   </div>
                   <div className="flex-1">
                     <h3 className="text-white text-base font-medium">{name}</h3>
-                    <p className="text-[#a0a0a0] text-sm mt-1">{t.cart.unitPrice}: ${price.toLocaleString()}</p>
+                    <p className="text-[#a0a0a0] text-sm mt-1">{t.cart.unitPrice}: {price.toLocaleString()} DT</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="flex items-center bg-[#111] border border-[rgba(255,255,255,0.1)] rounded-xl">
@@ -47,7 +47,7 @@ export default function CartPage() {
                       <span className="text-white text-sm font-medium px-3">{qty}</span>
                       <button onClick={() => updateQty(id, qty + 1)} className="w-10 h-10 flex items-center justify-center text-white hover:text-[#00f5ff] transition-colors">+</button>
                     </div>
-                    <span className="text-white text-lg font-bold w-[100px] text-right">${(price * qty).toLocaleString()}</span>
+                    <span className="text-white text-lg font-bold w-[100px] text-right">{(price * qty).toLocaleString()} DT</span>
                     <button onClick={() => removeFromCart(id)} className="text-[#a0a0a0] hover:text-red-400 transition-colors text-xl ml-2">✕</button>
                   </div>
                 </div>
@@ -60,7 +60,7 @@ export default function CartPage() {
             <div className="flex flex-col gap-3">
               <div className="flex justify-between text-sm">
                 <span className="text-[#a0a0a0]">{t.cart.subtotal} ({itemCount} {t.cart.items})</span>
-                <span className="text-white">${total.toLocaleString()}</span>
+                <span className="text-white">{total.toLocaleString()} DT</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-[#a0a0a0]">{t.cart.shipping}</span>
@@ -68,7 +68,7 @@ export default function CartPage() {
               </div>
               <div className="border-t border-[rgba(255,255,255,0.08)] pt-3 flex justify-between">
                 <span className="text-white font-medium">{t.cart.total}</span>
-                <span className="text-white text-xl font-bold">${total.toLocaleString()}</span>
+                <span className="text-white text-xl font-bold">{total.toLocaleString()} DT</span>
               </div>
             </div>
 

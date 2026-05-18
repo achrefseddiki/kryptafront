@@ -104,7 +104,7 @@ export default function BuilderPage() {
               <div className="border-t border-[rgba(255,255,255,0.08)] pt-4 flex flex-col gap-3">
                 <div className="flex justify-between">
                   <span className="text-[#a0a0a0] text-sm">{t.builder.estimatedTotal}</span>
-                  <span className="text-white text-xl font-bold">${TOTAL_PRICE.toLocaleString()}</span>
+                  <span className="text-white text-xl font-bold">{TOTAL_PRICE.toLocaleString()} DT</span>
                 </div>
                 <p className="text-[#a0a0a0] text-xs">
                   {components.filter((c) => !c.selected).length} {t.builder.componentsNeeded}
