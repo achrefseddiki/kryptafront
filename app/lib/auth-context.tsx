@@ -1,9 +1,10 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useLayoutEffect, useState } from "react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 const TOKEN_KEY = "krypta_token";
+const USER_KEY = "krypta_user";
 
 export interface AuthUser {
   id: string;
@@ -34,23 +35,52 @@ async function fetchMe(token: string): Promise<AuthUser> {
   return res.json();
 }
 
+function readCachedUser(): AuthUser | null {
+  try {
+    const raw = sessionStorage.getItem(USER_KEY);
+    return raw ? (JSON.parse(raw) as AuthUser) : null;
+  } catch {
+    return null;
+  }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  // Runs synchronously before paint — restores auth state from session cache
+  // so the profile button is never replaced by an invisible skeleton on reload/navigation.
+  useLayoutEffect(() => {
     const stored = localStorage.getItem(TOKEN_KEY);
     if (!stored) {
       setLoading(false);
       return;
     }
+    const cached = readCachedUser();
+    if (cached) {
+      setUser(cached);
+      setToken(stored);
+      setLoading(false);
+    }
+    // If no cache yet (first ever load), loading stays true until fetchMe resolves below.
+  }, []);
+
+  useEffect(() => {
+    const stored = localStorage.getItem(TOKEN_KEY);
+    if (!stored) return;
     fetchMe(stored)
       .then((me) => {
         setToken(stored);
         setUser(me);
+        sessionStorage.setItem(USER_KEY, JSON.stringify(me));
       })
-      .catch(() => localStorage.removeItem(TOKEN_KEY))
+      .catch(() => {
+        localStorage.removeItem(TOKEN_KEY);
+        sessionStorage.removeItem(USER_KEY);
+        setUser(null);
+        setToken(null);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -70,6 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setToken(t);
     const me = await fetchMe(t);
     setUser(me);
+    sessionStorage.setItem(USER_KEY, JSON.stringify(me));
   }
 
   async function login(email: string, password: string) {
@@ -82,6 +113,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   function logout() {
     localStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(USER_KEY);
     setToken(null);
     setUser(null);
   }

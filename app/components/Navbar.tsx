@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ASSETS, GRADIENT } from "../lib/assets";
 import { api } from "../lib/api";
 import { getLocale, getDict } from "../lib/i18n";
@@ -27,14 +28,22 @@ export default async function Navbar() {
 
       {/* Main bar: logo + search + actions */}
       <div className="h-20 border-b border-[rgba(255,255,255,0.05)] px-24 flex items-center justify-between gap-8 shrink-0">
-        <a href="/" className="relative w-[177px] h-10 overflow-hidden shrink-0">
+        <Link
+          href="/"
+          className="relative w-[177px] h-10 overflow-hidden shrink-0"
+        >
           <img
             src={ASSETS.logo}
             alt="KRYPTA"
             className="absolute"
-            style={{ height: "610%", width: "138%", left: "-19%", top: "-255%" }}
+            style={{
+              height: "610%",
+              width: "138%",
+              left: "-19%",
+              top: "-255%",
+            }}
           />
-        </a>
+        </Link>
 
         <div className="relative flex-1 max-w-[590px]">
           <img
@@ -50,16 +59,17 @@ export default async function Navbar() {
         </div>
 
         <div className="flex items-center gap-0.5 shrink-0">
-          <a
+          <Link
             href="/builder"
             className="h-11 px-6 rounded-2xl text-[#0a0a0a] text-base font-medium flex items-center"
             style={{
               background: GRADIENT,
-              filter: "drop-shadow(0px 4px 3px rgba(1,245,255,0.2)) drop-shadow(0px 2px 2px rgba(1,245,255,0.2))",
+              filter:
+                "drop-shadow(0px 4px 3px rgba(1,245,255,0.2)) drop-shadow(0px 2px 2px rgba(1,245,255,0.2))",
             }}
           >
             {t.nav.build}
-          </a>
+          </Link>
           <button className="size-10 rounded-2xl flex items-center justify-center hover:bg-white/5 transition-colors">
             <img src={ASSETS.iconWishlist} alt="Wishlist" className="size-5" />
           </button>
@@ -71,29 +81,32 @@ export default async function Navbar() {
       {/* Primary nav */}
       <div className="h-12 border-b border-[rgba(255,255,255,0.05)] bg-[rgba(26,26,26,0.3)] px-24 flex items-center justify-between shrink-0">
         <nav className="flex items-center gap-8">
-          <a
+          <Link
             href="/products"
             className="flex items-center gap-1 text-black text-sm font-medium px-3 py-1.5 rounded-[5px] shrink-0"
             style={{ background: GRADIENT }}
           >
             {t.nav.ourProducts}
             <img src={ASSETS.iconNavChevron} alt="" className="w-2 h-1" />
-          </a>
+          </Link>
           {[
             { label: "KryptaBar", href: "/builder" },
             { label: "KryptaDrop", href: "/drops" },
             { label: "KryptaLab", href: "/lab" },
           ].map(({ label, href }) => (
-            <a
+            <Link
               key={label}
               href={href}
               className="text-white text-sm font-medium hover:text-[#00f5ff] transition-colors whitespace-nowrap"
             >
               {label}
-            </a>
+            </Link>
           ))}
         </nav>
-        <a href="#" className="flex items-center gap-0.5 text-white text-sm font-medium shrink-0">
+        <a
+          href="#"
+          className="flex items-center gap-0.5 text-white text-sm font-medium shrink-0"
+        >
           <img src={ASSETS.iconLocation} alt="" className="size-5" />
           <span>{t.nav.location}</span>
         </a>

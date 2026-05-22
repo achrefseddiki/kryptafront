@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { Category } from "../lib/types";
 
 export default function NavCategoryBar({ categories }: { categories: Category[] }) {
@@ -15,7 +16,7 @@ export default function NavCategoryBar({ categories }: { categories: Category[] 
 
           return (
             <div key={root.slug} className="group h-12 flex items-center">
-              <a
+              <Link
                 href={`/products/${root.slug}`}
                 className="flex items-center gap-1 text-[#a0a0a0] text-sm hover:text-white transition-colors whitespace-nowrap"
               >
@@ -29,13 +30,13 @@ export default function NavCategoryBar({ categories }: { categories: Category[] 
                     <path d="M2 4L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 )}
-              </a>
+              </Link>
 
               {hasChildren && (
                 <div className="absolute left-0 right-0 top-full hidden group-hover:block z-50">
                   <div className="bg-[#0f0f0f] border-x-0 border-b border-t-0 border-white/[0.06] shadow-[0_12px_40px_rgba(0,0,0,0.6)] px-24 py-4 flex flex-wrap gap-1">
                     {children.map((child) => (
-                      <a
+                      <Link
                         key={child.slug}
                         href={`/products/${child.slug}`}
                         className="flex items-center gap-2 px-3 py-2 rounded-lg text-[#a0a0a0] text-sm hover:bg-white/[0.06] hover:text-white transition-colors whitespace-nowrap"
@@ -44,7 +45,7 @@ export default function NavCategoryBar({ categories }: { categories: Category[] 
                           <img src={child.img} alt="" className="size-4 object-contain opacity-60" />
                         )}
                         {child.label}
-                      </a>
+                      </Link>
                     ))}
                   </div>
                 </div>
