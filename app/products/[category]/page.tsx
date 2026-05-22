@@ -26,7 +26,8 @@ export default async function CategoryPage({
   params: Promise<{ category: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const { category } = await params;
+  const { category: rawCategory } = await params;
+  const category = decodeURIComponent(rawCategory);
   const sp = await searchParams;
 
   const search = typeof sp.search === "string" ? sp.search : undefined;
@@ -58,67 +59,31 @@ export default async function CategoryPage({
   const label = cat?.label ?? category.replace(/-/g, " ");
   const { data: products, total, totalPages } = result;
 
-  // Root category with sub-categories → show subcategory grid
-  if (children.length > 0) {
-    return (
-      <PageWrapper>
-        <div className="px-24 flex flex-col gap-8">
-          <nav className="flex items-center gap-2 text-sm text-[#a0a0a0]">
-            <a href="/" className="hover:text-white transition-colors">{t.products.home}</a>
-            <span className="text-white/20">/</span>
-            <a href="/products" className="hover:text-white transition-colors">{t.products.allProducts}</a>
-            <span className="text-white/20">/</span>
-            <span className="text-white">{label}</span>
-          </nav>
-
-          <div className="flex flex-col gap-2">
-            <h1 className="text-5xl font-bold text-white tracking-[-0.96px]">{label}</h1>
-            <p className="text-2xl font-normal text-[#a0a0a0]">{t.products.browseByCategory}</p>
-          </div>
-        </div>
-
-        <div className="px-24 pb-16">
-          <div className="grid grid-cols-4 gap-6">
-            {children.map(({ slug, label: childLabel, img }) => (
-              <a
-                key={slug}
-                href={`/products/${slug}`}
-                className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl h-[162px] flex flex-col items-center justify-center gap-3 hover:border-[#00f5ff]/50 hover:bg-[#1a1a1a]/80 transition-colors text-center px-4"
-              >
-                {img && <img src={img} alt={childLabel} className="size-10 object-contain" />}
-                <span className="text-base font-semibold text-white">{childLabel}</span>
-              </a>
-            ))}
-          </div>
-        </div>
-      </PageWrapper>
-    );
-  }
-
-  // Leaf category → show products with search/filter/pagination
   return (
     <PageWrapper>
-      <div className="px-24 flex flex-col gap-4">
-        <nav className="flex items-center gap-2 text-sm text-[#a0a0a0]">
+      <div className="px-4 sm:px-8 lg:px-24 flex flex-col gap-4">
+        <nav className="flex items-center gap-2 text-sm text-[#a0a0a0] flex-wrap">
           <a href="/" className="hover:text-white transition-colors">{t.products.home}</a>
           <span className="text-white/20">/</span>
           <a href="/products" className="hover:text-white transition-colors">{t.products.allProducts}</a>
           {parentCat && (
             <>
               <span className="text-white/20">/</span>
-              <a href={`/products/${parentCat.slug}`} className="hover:text-white transition-colors">{parentCat.label}</a>
+              <a href={`/products/${encodeURIComponent(parentCat.slug)}`} className="hover:text-white transition-colors">{parentCat.label}</a>
             </>
           )}
           <span className="text-white/20">/</span>
           <span className="text-white">{label}</span>
         </nav>
 
-        <div className="flex items-end justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="flex flex-col gap-1">
-            <h1 className="text-5xl font-bold text-white tracking-[-0.96px]">{label}</h1>
-            <p className="text-lg font-normal text-[#a0a0a0]">{total} {t.products.productsFound}</p>
+            <h1 className="text-3xl lg:text-5xl font-bold text-white tracking-[-0.96px]">{label}</h1>
+            <p className="text-base lg:text-lg font-normal text-[#a0a0a0]">
+              {children.length > 0 ? t.products.browseByCategory : `${total} ${t.products.productsFound}`}
+            </p>
           </div>
-          <div className="w-[360px]">
+          <div className="hidden sm:block w-[280px] lg:w-[360px]">
             <Suspense>
               <ProductSearchBar placeholder={t.products.searchPlaceholder} />
             </Suspense>
@@ -126,8 +91,25 @@ export default async function CategoryPage({
         </div>
       </div>
 
-      <div className="px-24 pb-16 mt-6">
-        <div className="flex gap-8">
+      {children.length > 0 && (
+        <div className="px-4 sm:px-8 lg:px-24 pb-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-4">
+            {children.map(({ slug, label: childLabel, img }) => (
+              <a
+                key={slug}
+                href={`/products/${encodeURIComponent(slug)}`}
+                className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl h-[120px] flex flex-col items-center justify-center gap-2 hover:border-[#00f5ff]/50 hover:bg-[#1a1a1a]/80 transition-colors text-center px-4"
+              >
+                {img && <img src={img} alt={childLabel} className="size-8 object-contain" />}
+                <span className="text-sm font-semibold text-white">{childLabel}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="px-4 sm:px-8 lg:px-24 pb-16 mt-6">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
           <Suspense>
             <ProductSidebar
               priceRanges={t.products.priceRanges}
@@ -137,6 +119,7 @@ export default async function CategoryPage({
                 brand: t.products.brand,
                 applyFilters: t.products.applyFilters,
                 clearFilters: t.products.clearFilters,
+                filters: t.products.filters,
               }}
             />
           </Suspense>
@@ -147,11 +130,11 @@ export default async function CategoryPage({
                 <p className="text-[#a0a0a0] text-lg">{t.products.noProducts}</p>
               </div>
             ) : (
-              <div className="grid grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                 {products.map(({ id, slug, name, brand: productBrand, price, oldPrice, img, badge, specs }) => (
                   <a
                     key={id}
-                    href={`/products/${category}/${slug}`}
+                    href={`/products/${encodeURIComponent(category)}/${encodeURIComponent(slug)}`}
                     className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl overflow-hidden hover:border-[rgba(255,255,255,0.2)] transition-colors group"
                   >
                     <div className="relative w-full h-[200px] overflow-hidden bg-[#111]">

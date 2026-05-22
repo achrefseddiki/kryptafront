@@ -17,7 +17,7 @@ export default async function BlogOffersSection() {
   const t = getDict(locale);
 
   return (
-    <section className="flex gap-5 overflow-x-auto scrollbar-hide px-24 pb-2">
+    <section className="flex gap-5 overflow-x-auto scrollbar-hide px-4 sm:px-8 lg:px-24 pb-2">
       {OFFERS.map((src, i) => (
         <a
           key={i}

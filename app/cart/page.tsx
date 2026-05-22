@@ -11,19 +11,20 @@ export default function CartPage() {
 
   return (
     <PageWrapper>
-      <div className="px-24 pb-16 flex flex-col gap-8">
+      <div className="px-4 sm:px-8 lg:px-24 pb-16 flex flex-col gap-6 lg:gap-8">
         <nav className="flex items-center gap-2 text-sm text-[#a0a0a0]">
           <a href="/" className="hover:text-white transition-colors">{t.products.home}</a>
           <span className="text-white/20">/</span>
           <span className="text-white">{t.cart.title}</span>
         </nav>
 
-        <h1 className="text-5xl font-bold text-white tracking-[-0.96px]">{t.cart.title}</h1>
+        <h1 className="text-3xl lg:text-5xl font-bold text-white tracking-[-0.96px]">{t.cart.title}</h1>
 
-        <div className="flex gap-8 items-start">
-          <div className="flex-1 flex flex-col gap-4">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+          {/* Items list */}
+          <div className="flex-1 flex flex-col gap-4 w-full">
             {items.length === 0 ? (
-              <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-16 flex flex-col items-center gap-6 text-center">
+              <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-10 lg:p-16 flex flex-col items-center gap-6 text-center">
                 <span className="text-6xl">🛒</span>
                 <h2 className="text-white text-2xl font-medium">{t.cart.empty}</h2>
                 <p className="text-[#a0a0a0] text-base">{t.cart.emptySub}</p>
@@ -33,29 +34,30 @@ export default function CartPage() {
               </div>
             ) : (
               items.map(({ id, name, price, qty, img }) => (
-                <div key={id} className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-6 flex items-center gap-6">
-                  <div className="size-[100px] rounded-xl overflow-hidden bg-[#111] shrink-0">
+                <div key={id} className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+                  <div className="size-[80px] sm:size-[100px] rounded-xl overflow-hidden bg-[#111] shrink-0">
                     <img src={img} alt={name} className="w-full h-full object-cover" />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <h3 className="text-white text-base font-medium">{name}</h3>
                     <p className="text-[#a0a0a0] text-sm mt-1">{t.cart.unitPrice}: {price.toLocaleString()} DT</p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 self-end sm:self-auto">
                     <div className="flex items-center bg-[#111] border border-[rgba(255,255,255,0.1)] rounded-xl">
-                      <button onClick={() => updateQty(id, qty - 1)} className="w-10 h-10 flex items-center justify-center text-white hover:text-[#00f5ff] transition-colors">−</button>
-                      <span className="text-white text-sm font-medium px-3">{qty}</span>
-                      <button onClick={() => updateQty(id, qty + 1)} className="w-10 h-10 flex items-center justify-center text-white hover:text-[#00f5ff] transition-colors">+</button>
+                      <button onClick={() => updateQty(id, qty - 1)} className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-white hover:text-[#00f5ff] transition-colors">−</button>
+                      <span className="text-white text-sm font-medium px-2 sm:px-3">{qty}</span>
+                      <button onClick={() => updateQty(id, qty + 1)} className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-white hover:text-[#00f5ff] transition-colors">+</button>
                     </div>
-                    <span className="text-white text-lg font-bold w-[100px] text-right">{(price * qty).toLocaleString()} DT</span>
-                    <button onClick={() => removeFromCart(id)} className="text-[#a0a0a0] hover:text-red-400 transition-colors text-xl ml-2">✕</button>
+                    <span className="text-white text-base sm:text-lg font-bold min-w-[80px] text-right">{(price * qty).toLocaleString()} DT</span>
+                    <button onClick={() => removeFromCart(id)} className="text-[#a0a0a0] hover:text-red-400 transition-colors text-xl ml-1">✕</button>
                   </div>
                 </div>
               ))
             )}
           </div>
 
-          <div className="w-[380px] shrink-0 bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-6 flex flex-col gap-6 sticky top-[220px]">
+          {/* Order summary */}
+          <div className="w-full lg:w-[380px] lg:shrink-0 bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-6 flex flex-col gap-6 lg:sticky lg:top-[220px]">
             <h2 className="text-white text-xl font-medium">{t.cart.orderSummary}</h2>
             <div className="flex flex-col gap-3">
               <div className="flex justify-between text-sm">

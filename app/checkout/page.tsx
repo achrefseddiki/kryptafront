@@ -66,9 +66,9 @@ export default function CheckoutPage() {
 
   return (
     <PageWrapper>
-      <div className="px-24 pb-16 flex flex-col gap-8">
+      <div className="px-4 sm:px-8 lg:px-24 pb-16 flex flex-col gap-6 lg:gap-8">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-[#a0a0a0]">
+        <nav className="flex items-center gap-2 text-sm text-[#a0a0a0] flex-wrap">
           <a href="/" className="hover:text-white transition-colors">{t.products.home}</a>
           <span className="text-white/20">/</span>
           <a href="/cart" className="hover:text-white transition-colors">{t.cart.title}</a>
@@ -76,10 +76,10 @@ export default function CheckoutPage() {
           <span className="text-white">{t.checkout.title}</span>
         </nav>
 
-        <h1 className="text-5xl font-bold text-white tracking-[-0.96px]">{t.checkout.title}</h1>
+        <h1 className="text-3xl lg:text-5xl font-bold text-white tracking-[-0.96px]">{t.checkout.title}</h1>
 
         {items.length === 0 ? (
-          <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-16 flex flex-col items-center gap-6 text-center">
+          <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-10 lg:p-16 flex flex-col items-center gap-6 text-center">
             <p className="text-[#a0a0a0] text-lg">{t.checkout.emptyCart}</p>
             <a href="/cart" className="h-12 px-8 rounded-2xl flex items-center text-[#0a0a0a] text-base font-medium" style={{ background: GRADIENT }}>
               {t.checkout.goToCart}
@@ -87,15 +87,15 @@ export default function CheckoutPage() {
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
-            <div className="flex gap-10 items-start">
+            <div className="flex flex-col lg:flex-row gap-6 lg:gap-10 items-start">
               {/* Left — delivery form + payment */}
-              <div className="flex-1 flex flex-col gap-8">
+              <div className="flex-1 flex flex-col gap-6 lg:gap-8 w-full">
 
                 {/* Delivery section */}
-                <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-8 flex flex-col gap-6">
+                <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-5 sm:p-8 flex flex-col gap-5 lg:gap-6">
                   <h2 className="text-white text-xl font-medium">{t.checkout.delivery}</h2>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Field label={t.checkout.firstName} value={form.firstName} onChange={v => set("firstName", v)} required />
                     <Field label={t.checkout.lastName} value={form.lastName} onChange={v => set("lastName", v)} required />
                     <Field label={t.checkout.phone} value={form.phone} onChange={v => set("phone", v)} type="tel" required />
@@ -129,10 +129,9 @@ export default function CheckoutPage() {
                 </div>
 
                 {/* Payment section */}
-                <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-8 flex flex-col gap-4">
+                <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-5 sm:p-8 flex flex-col gap-4">
                   <h2 className="text-white text-xl font-medium">{t.checkout.payment}</h2>
 
-                  {/* Cash on Delivery — selected */}
                   <div className="flex items-start gap-4 bg-[#00f5ff]/[0.05] border border-[#00f5ff]/20 rounded-xl p-4">
                     <span className="mt-0.5 size-5 rounded-full border-2 border-[#00f5ff] flex items-center justify-center shrink-0">
                       <span className="size-2.5 rounded-full bg-[#00f5ff]" />
@@ -143,11 +142,10 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  {/* Online Payment — coming soon */}
                   <div className="flex items-start gap-4 bg-[#111] border border-[rgba(255,255,255,0.06)] rounded-xl p-4 opacity-50 cursor-not-allowed select-none">
                     <span className="mt-0.5 size-5 rounded-full border-2 border-[rgba(255,255,255,0.2)] shrink-0" />
                     <div className="flex-1">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <p className="text-[#a0a0a0] text-sm font-medium">{t.checkout.online}</p>
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.08)] text-[#a0a0a0] uppercase tracking-wider">
                           {t.checkout.comingSoon}
@@ -162,13 +160,12 @@ export default function CheckoutPage() {
               </div>
 
               {/* Right — order summary */}
-              <div className="w-[380px] shrink-0 flex flex-col gap-4 sticky top-[220px]">
-                <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-6 flex flex-col gap-5">
+              <div className="w-full lg:w-[380px] lg:shrink-0 flex flex-col gap-4 lg:sticky lg:top-[220px]">
+                <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-5 lg:p-6 flex flex-col gap-5">
                   <h2 className="text-white text-xl font-medium">
                     {t.checkout.summary} ({itemCount} {t.checkout.items})
                   </h2>
 
-                  {/* Item list */}
                   <div className="flex flex-col gap-4">
                     {items.map(({ id, name, price, qty, img }) => (
                       <div key={id} className="flex items-center gap-3">
@@ -184,7 +181,6 @@ export default function CheckoutPage() {
                     ))}
                   </div>
 
-                  {/* Totals */}
                   <div className="border-t border-[rgba(255,255,255,0.08)] pt-4 flex flex-col gap-3">
                     <div className="flex justify-between text-sm">
                       <span className="text-[#a0a0a0]">{t.checkout.subtotal}</span>
@@ -229,7 +225,7 @@ function Field({
   fullWidth?: boolean;
 }) {
   return (
-    <div className={`flex flex-col gap-1.5 ${fullWidth ? "col-span-2" : ""}`}>
+    <div className={`flex flex-col gap-1.5 ${fullWidth ? "col-span-full" : ""}`}>
       <label className="text-[#a0a0a0] text-xs uppercase tracking-wider">{label}</label>
       <input
         type={type}

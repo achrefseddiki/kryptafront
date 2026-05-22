@@ -33,10 +33,10 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
 
   return (
     <PageWrapper>
-      <div className="px-24 pb-16 flex flex-col gap-8">
+      <div className="px-4 sm:px-8 lg:px-24 pb-16 flex flex-col gap-8">
         {/* Header */}
         <div className="flex flex-col gap-1">
-          <h1 className="text-4xl font-bold text-white tracking-tight">{t.account.title}</h1>
+          <h1 className="text-2xl lg:text-4xl font-bold text-white tracking-tight">{t.account.title}</h1>
           <p className="text-[#a0a0a0] text-sm">{user!.firstName} {user!.lastName} · {user!.email}</p>
         </div>
 

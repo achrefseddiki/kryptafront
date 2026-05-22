@@ -6,11 +6,11 @@ export default async function ComponentsSection() {
   const t = getDict(locale);
 
   return (
-    <section className="px-24 flex flex-col gap-10">
+    <section className="px-4 sm:px-8 lg:px-24 flex flex-col gap-10">
       {/* Top: heading + description */}
       <div className="flex flex-col gap-5 max-w-[691px]">
         <h2
-          className="text-[39px] font-bold leading-10 tracking-[-0.36px] bg-clip-text text-transparent"
+          className="text-2xl lg:text-[39px] font-bold leading-tight lg:leading-10 tracking-[-0.36px] bg-clip-text text-transparent"
           style={{ backgroundImage: GRADIENT }}
         >
           {t.home.components.heading}
@@ -21,10 +21,10 @@ export default async function ComponentsSection() {
       </div>
 
       {/* 2×2 grid of component details */}
-      <div className="grid grid-cols-2 gap-x-14 gap-y-14">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-14 gap-y-10 lg:gap-y-14">
         {t.home.components.items.map(({ title, body }) => (
           <div key={title} className="flex flex-col gap-3">
-            <h3 className="text-white text-[32px] font-medium leading-[44.8px]">{title}</h3>
+            <h3 className="text-white text-xl lg:text-[32px] font-medium leading-tight lg:leading-[44.8px]">{title}</h3>
             <p className="text-[#a0a0a0] text-base font-normal leading-[26px] text-justify">
               {body.map(({ text, highlight }, i) =>
                 highlight ? (

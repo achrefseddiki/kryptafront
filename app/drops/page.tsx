@@ -26,42 +26,42 @@ export default async function DropsPage() {
 
   return (
     <PageWrapper>
-      <div className="px-24 pb-16 flex flex-col gap-10">
-        <nav className="flex items-center gap-2 text-sm text-[#a0a0a0]">
+      <div className="px-4 sm:px-8 lg:px-24 pb-16 flex flex-col gap-8 lg:gap-10">
+        <nav className="flex items-center gap-2 text-sm text-[#a0a0a0] flex-wrap">
           <a href="/" className="hover:text-white transition-colors">{t.products.home}</a>
           <span className="text-white/20">/</span>
           <span className="text-white">{t.drops.breadcrumb}</span>
         </nav>
 
-        <div className="flex flex-col gap-4">
-          <h1 className="text-5xl font-bold text-white tracking-[-0.96px]">{t.drops.title}</h1>
-          <p className="text-2xl font-normal text-[#a0a0a0] max-w-[700px]">{t.drops.subtitle}</p>
+        <div className="flex flex-col gap-3">
+          <h1 className="text-3xl lg:text-5xl font-bold text-white tracking-[-0.96px]">{t.drops.title}</h1>
+          <p className="text-base lg:text-2xl font-normal text-[#a0a0a0] max-w-[700px]">{t.drops.subtitle}</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
           {drops.map(({ id, title, description, price, available, total, img, status, endsAt }) => {
             const cfg = STATUS_CONFIG[status];
             const pct = status === "sold_out" ? 100 : Math.round(((total - available) / total) * 100);
 
             return (
               <div key={id} className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl overflow-hidden hover:border-[rgba(255,255,255,0.2)] transition-colors">
-                <div className="relative h-[260px] overflow-hidden">
+                <div className="relative h-[200px] lg:h-[260px] overflow-hidden">
                   <img src={img} alt={title} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute top-4 left-4 flex items-center gap-2 bg-black/60 backdrop-blur-sm rounded-xl px-3 py-1.5">
+                  <div className="absolute top-3 left-3 flex items-center gap-2 bg-black/60 backdrop-blur-sm rounded-xl px-3 py-1.5">
                     <span className={`size-2 rounded-full ${cfg.dot} ${status === "live" ? "animate-pulse" : ""}`} />
                     <span className={`text-xs font-medium ${cfg.color}`}>{cfg.label}</span>
                   </div>
                   {endsAt && status === "live" && (
-                    <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-sm rounded-xl px-3 py-1.5">
+                    <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-xl px-3 py-1.5">
                       <span className="text-white text-xs font-medium">⏱ {formatCountdown(endsAt)}</span>
                     </div>
                   )}
                 </div>
 
-                <div className="p-6 flex flex-col gap-4">
+                <div className="p-4 lg:p-6 flex flex-col gap-4">
                   <div>
-                    <h3 className="text-white text-xl font-medium leading-tight">{title}</h3>
+                    <h3 className="text-white text-lg font-medium leading-tight">{title}</h3>
                     <p className="text-[#a0a0a0] text-sm mt-2 leading-5">{description}</p>
                   </div>
 
@@ -79,10 +79,10 @@ export default async function DropsPage() {
                   </div>
 
                   <div className="flex items-center justify-between mt-1">
-                    <span className="text-white text-2xl font-bold">{price} DT</span>
+                    <span className="text-white text-xl lg:text-2xl font-bold">{price} DT</span>
                     <button
                       disabled={status !== "live"}
-                      className={`h-11 px-6 rounded-2xl text-base font-medium transition-colors ${
+                      className={`h-10 lg:h-11 px-4 lg:px-6 rounded-2xl text-sm lg:text-base font-medium transition-colors ${
                         status === "live"
                           ? "text-[#0a0a0a]"
                           : "text-[#a0a0a0] bg-[rgba(255,255,255,0.05)] cursor-not-allowed"
@@ -99,12 +99,12 @@ export default async function DropsPage() {
         </div>
 
         <div
-          className="rounded-2xl p-10 border border-[rgba(1,245,255,0.2)] flex flex-col items-center gap-6 text-center"
+          className="rounded-2xl p-6 lg:p-10 border border-[rgba(1,245,255,0.2)] flex flex-col items-center gap-5 lg:gap-6 text-center"
           style={{ background: "linear-gradient(90deg, rgba(1,245,255,0.08), rgba(30,58,255,0.08))" }}
         >
-          <h2 className="text-white text-[32px] font-bold">{t.drops.newsletter.title}</h2>
-          <p className="text-[#a0a0a0] text-base max-w-[500px]">{t.drops.newsletter.subtitle}</p>
-          <div className="flex gap-3 w-full max-w-[480px]">
+          <h2 className="text-2xl lg:text-[32px] text-white font-bold">{t.drops.newsletter.title}</h2>
+          <p className="text-[#a0a0a0] text-sm lg:text-base max-w-[500px]">{t.drops.newsletter.subtitle}</p>
+          <div className="flex flex-col sm:flex-row gap-3 w-full max-w-[480px]">
             <input
               type="email"
               placeholder={t.drops.newsletter.placeholder}

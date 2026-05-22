@@ -13,6 +13,7 @@ export interface Product {
   price: number;
   oldPrice: number | null;
   img: string;
+  images: string[];
   badge: string | null;
   specs: string[];
   inStock: boolean;

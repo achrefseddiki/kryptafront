@@ -51,6 +51,30 @@ async function authPatch<T>(path: string, body: unknown): Promise<T> {
   return data;
 }
 
+async function authPost<T>(path: string, body: unknown): Promise<T> {
+  const res = await fetch(`${API_URL}${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+    body: JSON.stringify(body),
+    cache: 'no-store',
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    const msg = Array.isArray(data.message) ? data.message[0] : data.message;
+    throw new Error(msg ?? `API error ${res.status}`);
+  }
+  return data;
+}
+
+async function authDelete(path: string): Promise<void> {
+  const res = await fetch(`${API_URL}${path}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${getToken()}` },
+    cache: 'no-store',
+  });
+  if (!res.ok) throw new Error(`API error ${res.status}`);
+}
+
 export interface OrderLineItem {
   productId: string;
   name: string;
@@ -116,8 +140,8 @@ export const api = {
   categories: {
     list: () => get<Category[]>('/categories'),
     roots: () => get<Category[]>('/categories?root=true'),
-    children: (parentSlug: string) => get<Category[]>(`/categories?parent=${parentSlug}`),
-    get: (slug: string) => get<Category>(`/categories/${slug}`),
+    children: (parentSlug: string) => get<Category[]>(`/categories?parent=${encodeURIComponent(parentSlug)}`),
+    get: (slug: string) => get<Category>(`/categories/${encodeURIComponent(slug)}`),
   },
   products: {
     search: (params: ProductSearchParams) => {
@@ -152,5 +176,27 @@ export const api = {
   },
   users: {
     updateProfile: (payload: UpdateProfilePayload) => authPatch<{ id: string; firstName: string; lastName: string; email: string }>('/auth/me', payload),
+  },
+  admin: {
+    categories: {
+      create: (dto: unknown) => authPost<Category>('/categories', dto),
+      update: (slug: string, dto: unknown) => authPatch<Category>(`/categories/${slug}`, dto),
+      remove: (slug: string) => authDelete(`/categories/${slug}`),
+    },
+    products: {
+      create: (dto: unknown) => authPost<Product>('/products', dto),
+      update: (id: string, dto: unknown) => authPatch<Product>(`/products/${id}`, dto),
+      remove: (id: string) => authDelete(`/products/${id}`),
+    },
+    blogPosts: {
+      create: (dto: unknown) => authPost<BlogPost>('/blog-posts', dto),
+      update: (slug: string, dto: unknown) => authPatch<BlogPost>(`/blog-posts/${slug}`, dto),
+      remove: (slug: string) => authDelete(`/blog-posts/${slug}`),
+    },
+    drops: {
+      create: (dto: unknown) => authPost<Drop>('/drops', dto),
+      update: (id: string, dto: unknown) => authPatch<Drop>(`/drops/${id}`, dto),
+      remove: (id: string) => authDelete(`/drops/${id}`),
+    },
   },
 };

@@ -4,13 +4,15 @@ import { GRADIENT } from "../../../lib/assets";
 import { api } from "../../../lib/api";
 import { getLocale, getDict } from "../../../lib/i18n";
 import AddToCartButton from "../../../components/AddToCartButton";
+import ProductImageGallery from "../../../components/ProductImageGallery";
 
 export default async function ProductDetailPage({
   params,
 }: {
   params: Promise<{ category: string; id: string }>;
 }) {
-  const { category, id } = await params;
+  const { category: rawCategory, id } = await params;
+  const category = decodeURIComponent(rawCategory);
 
   const [locale, product] = await Promise.all([
     getLocale(),
@@ -23,8 +25,8 @@ export default async function ProductDetailPage({
 
   return (
     <PageWrapper>
-      <div className="px-24 flex flex-col gap-10">
-        <nav className="flex items-center gap-2 text-sm text-[#a0a0a0]">
+      <div className="px-4 sm:px-8 lg:px-24 flex flex-col gap-8 lg:gap-10">
+        <nav className="flex items-center gap-2 text-sm text-[#a0a0a0] flex-wrap">
           <a href="/" className="hover:text-white transition-colors">{t.products.home}</a>
           <span className="text-white/20">/</span>
           <a href="/products" className="hover:text-white transition-colors">{t.product_detail.pcComponents}</a>
@@ -34,24 +36,13 @@ export default async function ProductDetailPage({
           <span className="text-white truncate max-w-[200px]">{product.name}</span>
         </nav>
 
-        <div className="flex gap-12">
-          <div className="flex gap-4 shrink-0">
-            <div className="flex flex-col gap-3">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="size-[72px] bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-xl overflow-hidden cursor-pointer hover:border-[#00f5ff]/50 transition-colors">
-                  <img src={product.img} alt="" className="w-full h-full object-cover" />
-                </div>
-              ))}
-            </div>
-            <div className="w-[480px] h-[480px] bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl overflow-hidden">
-              <img src={product.img} alt={product.name} className="w-full h-full object-cover" />
-            </div>
-          </div>
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+          <ProductImageGallery mainImg={product.img} images={product.images ?? []} name={product.name} />
 
           <div className="flex-1 flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               <p className="text-[#a0a0a0] text-sm uppercase tracking-widest font-medium">{product.brand}</p>
-              <h1 className="text-[32px] font-bold text-white leading-tight">{product.name}</h1>
+              <h1 className="text-2xl lg:text-[32px] font-bold text-white leading-tight">{product.name}</h1>
               <div className="flex items-center gap-2 mt-1">
                 {[1,2,3,4,5].map((s) => (
                   <span key={s} className="text-[#00f5ff] text-lg">★</span>
@@ -61,7 +52,7 @@ export default async function ProductDetailPage({
             </div>
 
             <div className="flex items-center gap-4">
-              <span className="text-[40px] font-bold text-white">{product.price.toLocaleString()} DT</span>
+              <span className="text-3xl lg:text-[40px] font-bold text-white">{product.price.toLocaleString()} DT</span>
               {product.oldPrice && (
                 <span className="text-[#a0a0a0] text-xl line-through">{product.oldPrice.toLocaleString()} DT</span>
               )}
