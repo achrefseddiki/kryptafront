@@ -53,13 +53,8 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-[rgba(255,255,255,0.1)] w-full pt-8 flex flex-col sm:flex-row items-center gap-6 sm:gap-0 justify-between">
-        <a href="/" className="relative w-[177px] h-10 overflow-hidden">
-          <img
-            src={ASSETS.logo}
-            alt="KRYPTA"
-            className="absolute"
-            style={{ height: "610%", width: "138%", left: "-19%", top: "-255%" }}
-          />
+        <a href="/">
+          <img src={ASSETS.logo} alt="KRYPTA" className="h-10 w-auto" />
         </a>
         <div className="flex items-center gap-4">
           {SOCIAL_ICONS.map((icon, i) => (

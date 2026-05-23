@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1a1a"/>
+      <stop offset="100%" stop-color="#111111"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <path d="M160 110 L200 88 L240 110 L240 190 L200 212 L160 190 Z"
+        fill="none" stroke="rgba(0,245,255,0.12)" stroke-width="1.5"/>
+  <text x="200" y="156" text-anchor="middle"
+        font-family="sans-serif" font-weight="700" font-size="13"
+        fill="rgba(255,255,255,0.18)" letter-spacing="3">KRYPTA</text>
+</svg>

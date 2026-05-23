@@ -29,13 +29,8 @@ export default async function Navbar() {
 
       {/* Main bar */}
       <div className="h-14 lg:h-20 border-b border-[rgba(255,255,255,0.05)] px-4 lg:px-24 flex items-center justify-between gap-4 lg:gap-8 shrink-0">
-        <Link href="/" className="relative w-[120px] lg:w-[177px] h-8 lg:h-10 overflow-hidden shrink-0">
-          <img
-            src={ASSETS.logo}
-            alt="KRYPTA"
-            className="absolute"
-            style={{ height: "610%", width: "138%", left: "-19%", top: "-255%" }}
-          />
+        <Link href="/" className="shrink-0">
+          <img src={ASSETS.logo} alt="KRYPTA" data-kp-logo className="h-8 lg:h-10 w-auto" />
         </Link>
 
         {/* Search — desktop only */}

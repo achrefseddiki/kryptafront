@@ -41,13 +41,8 @@ export default function LoginPage() {
       <div className="flex-1 flex items-center justify-center px-4 py-16">
         <div className="w-full max-w-[480px] flex flex-col gap-8">
           <div className="flex flex-col items-center gap-1">
-            <a href="/" className="relative w-[150px] h-[34px] overflow-hidden mb-2">
-              <img
-                src={ASSETS.logo}
-                alt="KRYPTA"
-                className="absolute"
-                style={{ height: "610%", width: "138%", left: "-19%", top: "-255%" }}
-              />
+            <a href="/" className="mb-2">
+              <img src={ASSETS.logo} alt="KRYPTA" className="h-[34px] w-auto" />
             </a>
             <h1 className="text-white text-2xl font-bold">{t.auth_pages.welcomeBack}</h1>
             <p className="text-[#a0a0a0] text-sm">{t.auth_pages.signInSub}</p>

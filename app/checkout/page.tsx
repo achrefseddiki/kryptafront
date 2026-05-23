@@ -18,7 +18,7 @@ const GOVERNORATES = [
 
 const EMPTY = {
   firstName: "", lastName: "", phone: "", address: "",
-  city: "", governorate: "", notes: "",
+  city: "", governorate: "", notes: "", email: "",
 };
 
 export default function CheckoutPage() {
@@ -27,7 +27,7 @@ export default function CheckoutPage() {
   const { items, total, itemCount, clearCart } = useCart();
   const { user } = useAuth();
 
-  const [form, setForm] = useState(EMPTY);
+  const [form, setForm] = useState(() => ({ ...EMPTY, email: user?.email ?? "" }));
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -54,6 +54,7 @@ export default function CheckoutPage() {
           img: i.img,
         })),
         userId: user?.id,
+        email: form.email || undefined,
       });
       clearCart();
       router.push(`/checkout/confirmation?id=${order.id}`);
@@ -94,6 +95,8 @@ export default function CheckoutPage() {
                 {/* Delivery section */}
                 <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-5 sm:p-8 flex flex-col gap-5 lg:gap-6">
                   <h2 className="text-white text-xl font-medium">{t.checkout.delivery}</h2>
+
+                  <Field label="Email (for order confirmation)" value={form.email} onChange={v => set("email", v)} type="email" fullWidth />
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Field label={t.checkout.firstName} value={form.firstName} onChange={v => set("firstName", v)} required />

@@ -1,17 +1,15 @@
 import { ASSETS } from "../lib/assets";
 import { getLocale, getDict } from "../lib/i18n";
-
-const BUILDS = [
-  { title: "KRYPTA RTX 5090 Build", price: "4 999 DT", img: ASSETS.productRtx5090 },
-  { title: "Professional Gaming Mouse", price: "149 DT", img: ASSETS.productGamingMouse },
-  { title: "Dual Monitor Setup Kit", price: "899 DT", img: ASSETS.productDualMonitor },
-  { title: "KRYPTA RTX 5090 Build", price: "4 999 DT", img: ASSETS.productRtx5090 },
-  { title: "Dual Monitor Setup Kit", price: "899 DT", img: ASSETS.productDualMonitor },
-];
+import { api } from "../lib/api";
 
 export default async function PCBuildsSection() {
-  const locale = await getLocale();
+  const [locale, featuredBuilds] = await Promise.all([
+    getLocale(),
+    api.featuredBuilds.list().catch(() => []),
+  ]);
   const t = getDict(locale);
+
+  if (featuredBuilds.length === 0) return null;
 
   return (
     <section className="px-4 sm:px-8 lg:px-24 flex flex-col gap-5">
@@ -28,18 +26,20 @@ export default async function PCBuildsSection() {
 
       {/* Horizontally scrollable cards */}
       <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-2">
-        {BUILDS.map(({ title, price, img }, i) => (
+        {featuredBuilds.map(({ id, product }) => (
           <a
-            key={i}
-            href="#"
+            key={id}
+            href={`/products/${product.categorySlug}/${product.slug}`}
             className="flex-none w-[200px] sm:w-[261px] bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl overflow-hidden hover:border-[rgba(255,255,255,0.2)] transition-colors"
           >
             <div className="w-full h-[180px] sm:h-[259px] overflow-hidden">
-              <img src={img} alt={title} className="w-full h-full object-cover" />
+              <img src={product.img} alt={product.name} className="w-full h-full object-cover" />
             </div>
             <div className="p-4 sm:p-6 flex flex-col gap-1 sm:gap-2">
-              <h3 className="text-white text-base sm:text-2xl font-medium leading-snug">{title}</h3>
-              <p className="text-white text-xl sm:text-[32px] font-bold leading-tight sm:leading-[44.8px]">{price}</p>
+              <h3 className="text-white text-base sm:text-2xl font-medium leading-snug">{product.name}</h3>
+              <p className="text-white text-xl sm:text-[32px] font-bold leading-tight sm:leading-[44.8px]">
+                {product.price.toLocaleString()} DT
+              </p>
             </div>
           </a>
         ))}

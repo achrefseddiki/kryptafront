@@ -57,3 +57,26 @@ export interface Review {
   productId: string;
   createdAt: string;
 }
+
+export interface FeaturedBuild {
+  id: string;
+  productId: string;
+  product: Product;
+  position: number;
+}
+
+export interface HeroContent {
+  id: number;
+  title1En: string | null;
+  title1Fr: string | null;
+  title2En: string | null;
+  title2Fr: string | null;
+  subtitleEn: string | null;
+  subtitleFr: string | null;
+  btn1LabelEn: string | null;
+  btn1LabelFr: string | null;
+  btn1Href: string | null;
+  btn2LabelEn: string | null;
+  btn2LabelFr: string | null;
+  btn2Href: string | null;
+}

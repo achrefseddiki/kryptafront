@@ -68,13 +68,8 @@ export default function MobileNavDrawer({ categories, t }: Props) {
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
-          <Link href="/" onClick={close} className="relative w-[120px] h-7 overflow-hidden">
-            <img
-              src={ASSETS.logo}
-              alt="KRYPTA"
-              className="absolute"
-              style={{ height: "610%", width: "138%", left: "-19%", top: "-255%" }}
-            />
+          <Link href="/" onClick={close}>
+            <img src={ASSETS.logo} alt="KRYPTA" className="h-7 w-auto" />
           </Link>
           <button
             onClick={close}

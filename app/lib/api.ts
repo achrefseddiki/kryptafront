@@ -1,4 +1,4 @@
-import type { Category, Product, BlogPost, Drop, Review } from './types';
+import type { Category, Product, BlogPost, Drop, Review, HeroContent, FeaturedBuild } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
@@ -109,6 +109,7 @@ export interface CreateOrderPayload {
   notes?: string;
   items: OrderLineItem[];
   userId?: string;
+  email?: string;
 }
 
 export interface UpdateProfilePayload {
@@ -168,6 +169,20 @@ export const api = {
     list: (status?: string) =>
       get<Drop[]>(`/drops${status ? `?status=${status}` : ''}`),
     get: (id: string) => get<Drop>(`/drops/${id}`),
+  },
+  heroContent: {
+    get: () => get<HeroContent | null>('/hero-content'),
+  },
+  featuredBuilds: {
+    list: () => get<FeaturedBuild[]>('/featured-builds'),
+  },
+  builder: {
+    suggest: (payload: {
+      selectedComponents: { slot: string; label: string; productId: string; productName: string; price: number; specs: string[] }[];
+      targetSlot: string;
+      targetLabel: string;
+      budget?: number;
+    }) => post<{ suggestions: { productId: string; slug: string; name: string; brand: string; price: number; img: string; specs: string[]; reason: string }[] }>('/builder/suggest', payload),
   },
   orders: {
     create: (payload: CreateOrderPayload) => post<Order>('/orders', payload),
