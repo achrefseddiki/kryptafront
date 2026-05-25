@@ -1,4 +1,4 @@
-import type { Category, Product, BlogPost, Drop, Review, HeroContent, FeaturedBuild } from './types';
+import type { Category, Product, BlogPost, Drop, Review, HeroContent, FeaturedBuild, Offer, KryptaBuild } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
@@ -170,11 +170,22 @@ export const api = {
       get<Drop[]>(`/drops${status ? `?status=${status}` : ''}`),
     get: (id: string) => get<Drop>(`/drops/${id}`),
   },
+  offers: {
+    listActive: () => get<Offer[]>('/offers'),
+    getBySlug: (slug: string) => get<Offer>(`/offers/slug/${slug}`),
+    reviews: (offerId: string) => get<Review[]>(`/offers/${offerId}/reviews`),
+    addReview: (offerId: string, body: { author: string; rating: number; body: string }) =>
+      post<Review>(`/offers/${offerId}/reviews`, body),
+  },
   heroContent: {
     get: () => get<HeroContent | null>('/hero-content'),
   },
   featuredBuilds: {
     list: () => get<FeaturedBuild[]>('/featured-builds'),
+  },
+  kryptaBuilds: {
+    list: () => get<KryptaBuild[]>('/krypta-builds'),
+    get: (id: string) => get<KryptaBuild>(`/krypta-builds/${id}`),
   },
   builder: {
     suggest: (payload: {
@@ -189,8 +200,17 @@ export const api = {
     get: (id: string) => get<Order>(`/orders/${id}`),
     myOrders: () => authGet<Order[]>('/orders/my'),
   },
+  repairRequests: {
+    create: (payload: { name: string; email: string; address: string; phone: string; type: string; details: string }) =>
+      post<{ id: string }>('/repair-requests', payload),
+  },
   users: {
     updateProfile: (payload: UpdateProfilePayload) => authPatch<{ id: string; firstName: string; lastName: string; email: string }>('/auth/me', payload),
+  },
+  wishlist: {
+    list: () => authGet<Product[]>('/users/me/wishlist'),
+    add: (productId: string) => authPost<void>(`/users/me/wishlist/${productId}`, {}),
+    remove: (productId: string) => authDelete(`/users/me/wishlist/${productId}`),
   },
   admin: {
     categories: {
@@ -212,6 +232,12 @@ export const api = {
       create: (dto: unknown) => authPost<Drop>('/drops', dto),
       update: (id: string, dto: unknown) => authPatch<Drop>(`/drops/${id}`, dto),
       remove: (id: string) => authDelete(`/drops/${id}`),
+    },
+    offers: {
+      listAll: () => authGet<Offer[]>('/offers/all'),
+      create: (dto: unknown) => authPost<Offer>('/offers', dto),
+      update: (id: string, dto: unknown) => authPatch<Offer>(`/offers/${id}`, dto),
+      remove: (id: string) => authDelete(`/offers/${id}`),
     },
   },
 };

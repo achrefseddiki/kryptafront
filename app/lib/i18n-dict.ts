@@ -114,9 +114,13 @@ const fr = {
   account: {
     title: "Mon compte",
     orders: "Mes commandes",
+    wishlist: "Liste de souhaits",
     profile: "Profil",
     noOrders: "Aucune commande pour l'instant.",
     noOrdersSub: "Vos commandes apparaîtront ici une fois passées.",
+    emptyWishlist: "Votre liste de souhaits est vide.",
+    emptyWishlistSub: "Ajoutez des produits pour les retrouver ici.",
+    viewProduct: "Voir",
     shopNow: "Explorer les produits",
     order: "Commande",
     items: "article(s)",
@@ -167,6 +171,7 @@ const fr = {
     claimed: "réclamés",
     claimNow: "Réclamer",
     notifyMe: "M'alerter",
+    upcomingDrops: "Prochains Drops",
     newsletter: {
       title: "Ne ratez aucun Drop",
       subtitle: "Rejoignez la communauté KRYPTA et soyez les premiers alertés lors des nouveaux drops.",
@@ -556,9 +561,13 @@ const en: typeof fr = {
   account: {
     title: "My Account",
     orders: "My Orders",
+    wishlist: "Wishlist",
     profile: "Profile",
     noOrders: "No orders yet.",
     noOrdersSub: "Your orders will appear here once you place them.",
+    emptyWishlist: "Your wishlist is empty.",
+    emptyWishlistSub: "Add products to save them for later.",
+    viewProduct: "View",
     shopNow: "Browse Products",
     order: "Order",
     items: "item(s)",
@@ -609,6 +618,7 @@ const en: typeof fr = {
     claimed: "claimed",
     claimNow: "Claim Now",
     notifyMe: "Notify Me",
+    upcomingDrops: "Upcoming Drops",
     newsletter: {
       title: "Never Miss a Drop",
       subtitle: "Join the KRYPTA community and get notified first when new drops go live.",

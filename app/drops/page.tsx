@@ -4,100 +4,149 @@ import { api } from "../lib/api";
 import { getLocale, getDict } from "../lib/i18n";
 import type { Drop } from "../lib/types";
 import type { Locale } from "../lib/i18n-dict";
-
-function formatCountdown(endsAt: string): string {
-  const diff = new Date(endsAt).getTime() - Date.now();
-  if (diff <= 0) return "Ended";
-  const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  return `${d}d ${h}h ${m}m`;
-}
+import DropCountdown from "./DropCountdown";
+import ClaimDropButton from "./ClaimDropButton";
 
 export default async function DropsPage() {
   const [drops, locale]: [Drop[], Locale] = await Promise.all([api.drops.list(), getLocale()]);
   const t = getDict(locale);
 
-  const STATUS_CONFIG = {
-    live: { label: t.drops.live, color: "text-green-400", dot: "bg-green-400" },
-    sold_out: { label: t.drops.soldOut, color: "text-red-400", dot: "bg-red-400" },
-    upcoming: { label: t.drops.upcoming, color: "text-[#00f5ff]", dot: "bg-[#00f5ff]" },
-  };
+  const liveDrops = drops.filter((d) => d.status === "live");
+  const upcomingDrops = drops.filter((d) => d.status === "upcoming");
+  const soldOutDrops = drops.filter((d) => d.status === "sold_out");
 
   return (
     <PageWrapper>
-      <div className="px-4 sm:px-8 lg:px-24 pb-16 flex flex-col gap-8 lg:gap-10">
+      <div className="px-4 sm:px-8 lg:px-24 pb-16 flex flex-col gap-10 lg:gap-14">
+        {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-[#a0a0a0] flex-wrap">
           <a href="/" className="hover:text-white transition-colors">{t.products.home}</a>
           <span className="text-white/20">/</span>
           <span className="text-white">{t.drops.breadcrumb}</span>
         </nav>
 
-        <div className="flex flex-col gap-3">
-          <h1 className="text-3xl lg:text-5xl font-bold text-white tracking-[-0.96px]">{t.drops.title}</h1>
-          <p className="text-base lg:text-2xl font-normal text-[#a0a0a0] max-w-[700px]">{t.drops.subtitle}</p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-          {drops.map(({ id, title, description, price, available, total, img, status, endsAt }) => {
-            const cfg = STATUS_CONFIG[status];
-            const pct = status === "sold_out" ? 100 : Math.round(((total - available) / total) * 100);
-
-            return (
-              <div key={id} className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl overflow-hidden hover:border-[rgba(255,255,255,0.2)] transition-colors">
-                <div className="relative h-[200px] lg:h-[260px] overflow-hidden">
-                  <img src={img} alt={title} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <div className="absolute top-3 left-3 flex items-center gap-2 bg-black/60 backdrop-blur-sm rounded-xl px-3 py-1.5">
-                    <span className={`size-2 rounded-full ${cfg.dot} ${status === "live" ? "animate-pulse" : ""}`} />
-                    <span className={`text-xs font-medium ${cfg.color}`}>{cfg.label}</span>
-                  </div>
-                  {endsAt && status === "live" && (
-                    <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm rounded-xl px-3 py-1.5">
-                      <span className="text-white text-xs font-medium">⏱ {formatCountdown(endsAt)}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="p-4 lg:p-6 flex flex-col gap-4">
-                  <div>
-                    <h3 className="text-white text-lg font-medium leading-tight">{title}</h3>
-                    <p className="text-[#a0a0a0] text-sm mt-2 leading-5">{description}</p>
+        {/* Live Drops */}
+        {liveDrops.length > 0 ? (
+          <div className="flex flex-col gap-6">
+            {liveDrops.map((liveDrop) => (
+              <div key={liveDrop.id} className="rounded-2xl overflow-hidden border border-[rgba(255,255,255,0.1)] bg-[#111] flex flex-col lg:flex-row min-h-[400px] lg:min-h-[460px]">
+                {/* Left: Info */}
+                <div className="flex-1 p-6 lg:p-10 flex flex-col gap-5 justify-center">
+                  <div className="flex items-center gap-2 w-fit bg-[rgba(34,197,94,0.12)] border border-[rgba(34,197,94,0.3)] rounded-full px-3.5 py-1.5">
+                    <span className="size-2 rounded-full bg-green-400 animate-pulse" />
+                    <span className="text-green-400 text-xs font-semibold uppercase tracking-widest">{t.drops.live}</span>
                   </div>
 
-                  <div className="flex flex-col gap-2">
+                  <h1 className="text-3xl lg:text-[42px] font-bold text-white leading-tight tracking-[-0.5px]">
+                    {liveDrop.title}
+                  </h1>
+
+                  <p className="text-[#a0a0a0] text-sm lg:text-base leading-6 max-w-[460px]">
+                    {liveDrop.description}
+                  </p>
+
+                  <div className="text-3xl lg:text-4xl font-bold text-white">
+                    {liveDrop.price.toLocaleString()} <span className="text-lg font-medium text-[#a0a0a0]">DT</span>
+                  </div>
+
+                  {liveDrop.endsAt && <DropCountdown endsAt={liveDrop.endsAt} />}
+
+                  <div className="flex flex-col gap-2 max-w-[320px]">
                     <div className="flex justify-between text-xs text-[#a0a0a0]">
-                      <span>{total - available} / {total} {t.drops.claimed}</span>
-                      <span>{pct}%</span>
+                      <span>{liveDrop.total - liveDrop.available} / {liveDrop.total} {t.drops.claimed}</span>
+                      <span>{Math.round(((liveDrop.total - liveDrop.available) / liveDrop.total) * 100)}%</span>
                     </div>
                     <div className="h-1.5 bg-[rgba(255,255,255,0.08)] rounded-full overflow-hidden">
                       <div
-                        className="h-full rounded-full transition-all"
-                        style={{ width: `${pct}%`, background: GRADIENT }}
+                        className="h-full rounded-full"
+                        style={{
+                          width: `${Math.round(((liveDrop.total - liveDrop.available) / liveDrop.total) * 100)}%`,
+                          background: GRADIENT,
+                        }}
                       />
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between mt-1">
-                    <span className="text-white text-xl lg:text-2xl font-bold">{price} DT</span>
-                    <button
-                      disabled={status !== "live"}
-                      className={`h-10 lg:h-11 px-4 lg:px-6 rounded-2xl text-sm lg:text-base font-medium transition-colors ${
-                        status === "live"
-                          ? "text-[#0a0a0a]"
-                          : "text-[#a0a0a0] bg-[rgba(255,255,255,0.05)] cursor-not-allowed"
-                      }`}
-                      style={status === "live" ? { background: GRADIENT } : {}}
-                    >
-                      {status === "live" ? t.drops.claimNow : status === "sold_out" ? t.drops.soldOut : t.drops.notifyMe}
-                    </button>
-                  </div>
+                  <ClaimDropButton drop={liveDrop} label={t.drops.claimNow} />
+                </div>
+
+                {/* Right: Image */}
+                <div className="lg:w-[45%] h-[260px] lg:h-auto relative flex-shrink-0">
+                  <img src={liveDrop.img} alt={liveDrop.title} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#111] via-transparent to-transparent lg:block hidden" />
                 </div>
               </div>
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            <h1 className="text-3xl lg:text-5xl font-bold text-white tracking-[-0.96px]">{t.drops.title}</h1>
+            <p className="text-base lg:text-2xl font-normal text-[#a0a0a0] max-w-[700px]">{t.drops.subtitle}</p>
+          </div>
+        )}
 
+        {/* Upcoming Drops */}
+        {upcomingDrops.length > 0 && (
+          <section className="flex flex-col gap-6">
+            <h2 className="text-2xl lg:text-3xl font-bold text-white">{t.drops.upcomingDrops}</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+              {upcomingDrops.map(({ id, title, img }) => (
+                <div key={id} className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl overflow-hidden hover:border-[rgba(255,255,255,0.2)] transition-colors">
+                  <div className="relative h-[200px] lg:h-[240px] overflow-hidden">
+                    <img src={img} alt={title} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute top-3 left-3 flex items-center gap-2 bg-black/60 backdrop-blur-sm rounded-xl px-3 py-1.5">
+                      <span className="size-2 rounded-full bg-[#00f5ff]" />
+                      <span className="text-[#00f5ff] text-xs font-medium">{t.drops.upcoming}</span>
+                    </div>
+                  </div>
+                  <div className="p-4 lg:p-5">
+                    <h3 className="text-white text-base font-medium">{title}</h3>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Sold Out Drops */}
+        {soldOutDrops.length > 0 && (
+          <section className="flex flex-col gap-6">
+            <h2 className="text-xl font-semibold text-[#a0a0a0]">{t.drops.soldOut}</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+              {soldOutDrops.map(({ id, title, description, price, available, total, img }) => (
+                <div key={id} className="bg-[#111] border border-[rgba(255,255,255,0.07)] rounded-2xl overflow-hidden opacity-60">
+                  <div className="relative h-[180px] lg:h-[220px] overflow-hidden">
+                    <img src={img} alt={title} className="w-full h-full object-cover grayscale" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                    <div className="absolute top-3 left-3 flex items-center gap-2 bg-black/60 backdrop-blur-sm rounded-xl px-3 py-1.5">
+                      <span className="size-2 rounded-full bg-red-400" />
+                      <span className="text-red-400 text-xs font-medium">{t.drops.soldOut}</span>
+                    </div>
+                  </div>
+                  <div className="p-4 lg:p-5 flex flex-col gap-3">
+                    <h3 className="text-white text-base font-medium">{title}</h3>
+                    <div className="flex flex-col gap-1.5">
+                      <div className="flex justify-between text-xs text-[#a0a0a0]">
+                        <span>{total - available} / {total} {t.drops.claimed}</span>
+                        <span>100%</span>
+                      </div>
+                      <div className="h-1.5 bg-[rgba(255,255,255,0.08)] rounded-full overflow-hidden">
+                        <div className="h-full w-full rounded-full bg-red-400/50" />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-white text-lg font-bold">{price} DT</span>
+                      <span className="text-[#a0a0a0] text-sm bg-[rgba(255,255,255,0.05)] px-3 py-1.5 rounded-xl">{t.drops.soldOut}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Newsletter */}
         <div
           className="rounded-2xl p-6 lg:p-10 border border-[rgba(1,245,255,0.2)] flex flex-col items-center gap-5 lg:gap-6 text-center"
           style={{ background: "linear-gradient(90deg, rgba(1,245,255,0.08), rgba(30,58,255,0.08))" }}

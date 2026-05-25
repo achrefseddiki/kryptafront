@@ -94,7 +94,7 @@ export default async function Navbar() {
             <img src={ASSETS.iconNavChevron} alt="" className="w-2 h-1" />
           </Link>
           {[
-            { label: "KryptaBar", href: "/builder" },
+            { label: "KryptaBar", href: "/builds" },
             { label: "KryptaDrop", href: "/drops" },
             { label: "KryptaLab", href: "/lab" },
           ].map(({ label, href }) => (

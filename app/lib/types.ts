@@ -65,6 +65,38 @@ export interface FeaturedBuild {
   position: number;
 }
 
+export interface Offer {
+  id: string;
+  slug: string | null;
+  title: string;
+  description: string | null;
+  price: number;
+  img: string | null;
+  images: string[];
+  startDate: string | null;
+  endDate: string | null;
+  products: Product[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface KryptaBuild {
+  id: string;
+  name: string;
+  tagline: string | null;
+  badge: string | null;
+  price: number;
+  img: string | null;
+  images: string[];
+  specs: { label: string; value: string; icon?: string }[];
+  fps1080: number | null;
+  fps1440: number | null;
+  fps4k: number | null;
+  features: string[];
+  inStock: boolean;
+  createdAt: string;
+}
+
 export interface HeroContent {
   id: number;
   title1En: string | null;

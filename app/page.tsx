@@ -17,10 +17,6 @@ export default function HomePage() {
         <TrustSection />
         <PCBuildsSection />
 
-        <div className="w-full h-[660px] overflow-hidden">
-          <img src={ASSETS.decorativeBanner} alt="" className="w-full h-full object-cover" />
-        </div>
-
         <BlogOffersSection />
         <CategorySection />
         <KryptaUniverseSection />

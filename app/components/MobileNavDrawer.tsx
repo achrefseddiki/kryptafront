@@ -110,7 +110,7 @@ export default function MobileNavDrawer({ categories, t }: Props) {
             {t.ourProducts}
           </Link>
           {[
-            { label: "KryptaBar", href: "/builder" },
+            { label: "KryptaBar", href: "/builds" },
             { label: "KryptaDrop", href: "/drops" },
             { label: "KryptaLab", href: "/lab" },
           ].map(({ label, href }) => (
