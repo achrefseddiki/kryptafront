@@ -5,8 +5,11 @@ import { CartProvider } from "./lib/cart-context";
 import { AuthProvider } from "./lib/auth-context";
 import { LanguageProvider } from "./lib/language-context";
 import { WishlistProvider } from "./lib/wishlist-context";
+import { CompareProvider } from "./lib/compare-context";
 import { getLocale } from "./lib/i18n";
 import Navbar from "./components/Navbar";
+import CompareBar from "./components/CompareBar";
+import CartToast from "./components/CartToast";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -33,8 +36,12 @@ export default async function RootLayout({
           <AuthProvider>
             <WishlistProvider>
               <CartProvider>
-                <Navbar />
-                {children}
+                <CompareProvider>
+                  <Navbar />
+                  {children}
+                  <CompareBar />
+                  <CartToast />
+                </CompareProvider>
               </CartProvider>
             </WishlistProvider>
           </AuthProvider>

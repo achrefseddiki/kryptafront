@@ -42,7 +42,7 @@ export default async function LabPage() {
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mt-2">
             <a
-              href="/support"
+              href="/lab/repair"
               className="h-[52px] px-8 rounded-2xl flex items-center text-[#0a0a0a] text-base font-medium"
               style={{ background: GRADIENT, filter: "drop-shadow(0px 6px 6px rgba(1,245,255,0.2))" }}
             >
@@ -100,7 +100,7 @@ export default async function LabPage() {
                 </div>
                 <div className="flex items-center justify-between pt-2 border-t border-[rgba(255,255,255,0.06)]">
                   <span className="text-white font-bold">{price}</span>
-                  <a href="/support" className="text-[#00f5ff] text-sm font-medium hover:underline">
+                  <a href="/lab/repair" className="text-[#00f5ff] text-sm font-medium hover:underline">
                     {t.lab.book}
                   </a>
                 </div>
@@ -171,7 +171,7 @@ export default async function LabPage() {
             </div>
             <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
               <a
-                href="/support"
+                href="/lab/repair"
                 className="h-[52px] px-8 rounded-2xl flex items-center text-[#0a0a0a] text-base font-medium"
                 style={{ background: GRADIENT, filter: "drop-shadow(0px 6px 6px rgba(1,245,255,0.2))" }}
               >

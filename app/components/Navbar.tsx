@@ -59,9 +59,9 @@ export default async function Navbar() {
           >
             {t.nav.build}
           </Link>
-          <button className="size-10 rounded-2xl flex items-center justify-center hover:bg-white/5 transition-colors">
+          <Link href="/account/wishlist" className="size-10 rounded-2xl flex items-center justify-center hover:bg-white/5 transition-colors">
             <img src={ASSETS.iconWishlist} alt="Wishlist" className="size-5" />
-          </button>
+          </Link>
           <NavProfileButton />
           <CartNavButton />
         </div>

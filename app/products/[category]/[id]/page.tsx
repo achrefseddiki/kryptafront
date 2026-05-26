@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import PageWrapper from "../../../components/PageWrapper";
-import { GRADIENT } from "../../../lib/assets";
 import { api } from "../../../lib/api";
 import { getLocale, getDict } from "../../../lib/i18n";
 import AddToCartButton from "../../../components/AddToCartButton";
 import ProductImageGallery from "../../../components/ProductImageGallery";
+import WishlistButton from "../../../components/WishlistButton";
+import ProductTabs from "../../../components/ProductTabs";
 
 export default async function ProductDetailPage({
   params,
@@ -124,12 +125,7 @@ export default async function ProductDetailPage({
                   img: product.img,
                 }}
               />
-              <a
-                href="/builder"
-                className="h-[52px] px-6 rounded-2xl flex items-center border-[1.6px] border-[#00f5ff] text-[#00f5ff] text-base font-medium hover:bg-[#00f5ff]/10 transition-colors"
-              >
-                {t.product_detail.addToBuild}
-              </a>
+              <WishlistButton productId={product.id} showLabel className="h-[52px] px-6 text-base font-medium" />
             </div>
 
             <div className="grid grid-cols-3 gap-4 pt-4 border-t border-[rgba(255,255,255,0.08)]">
@@ -150,78 +146,18 @@ export default async function ProductDetailPage({
           </div>
         </div>
 
-        <div className="flex flex-col gap-8 pb-16">
-          <div className="flex gap-8 border-b border-[rgba(255,255,255,0.08)]">
-            {[
-              t.product_detail.description,
-              t.product_detail.specifications,
-              t.product_detail.reviewsTab,
-            ].map((tab, i) => (
-              <button
-                key={tab}
-                className={`pb-4 text-base font-medium transition-colors relative ${
-                  i === 0 ? "text-white" : "text-[#a0a0a0] hover:text-white"
-                }`}
-              >
-                {tab}
-                {i === 0 && (
-                  <span
-                    className="absolute bottom-0 left-0 right-0 h-0.5"
-                    style={{ background: GRADIENT }}
-                  />
-                )}
-              </button>
-            ))}
-          </div>
-
-          <div className="flex flex-col gap-4 ">
-            <p className="text-[#a0a0a0] text-base leading-[26px]">
-              {`The ${product.name} represents the pinnacle of GPU engineering. Built on the latest architecture, it delivers unparalleled performance for 4K gaming, ray tracing, and AI-accelerated workloads.`}
-            </p>
-            <p className="text-[#a0a0a0] text-base leading-[26px]">
-              {`Compatible with the latest PCIe slots and featuring advanced thermal management, the ${product.name} maintains optimal temperatures even under sustained load.`}
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-6 mt-4">
-            <h3 className="text-white text-2xl font-medium">
-              {t.product_detail.customerReviews}
-            </h3>
-            {reviews.length === 0 ? (
-              <p className="text-[#a0a0a0]">{t.product_detail.noReviews}</p>
-            ) : (
-              reviews.map(({ id: rid, author, rating, body, createdAt }) => (
-                <div
-                  key={rid}
-                  className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-6 flex flex-col gap-3"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-white text-base font-medium">
-                        {author}
-                      </span>
-                      <div className="flex items-center gap-1">
-                        {Array.from({ length: rating }).map((_, i) => (
-                          <span key={i} className="text-[#00f5ff] text-sm">
-                            ★
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <span className="text-[#a0a0a0] text-sm">
-                      {new Date(createdAt).toLocaleDateString(t.dateLocale, {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </span>
-                  </div>
-                  <p className="text-[#a0a0a0] text-sm leading-6">{body}</p>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+        <ProductTabs
+          product={product}
+          initialReviews={reviews}
+          t={{
+            description: t.product_detail.description,
+            specifications: t.product_detail.specifications,
+            reviewsTab: t.product_detail.reviewsTab,
+            customerReviews: t.product_detail.customerReviews,
+            noReviews: t.product_detail.noReviews,
+            dateLocale: t.dateLocale,
+          }}
+        />
       </div>
     </PageWrapper>
   );

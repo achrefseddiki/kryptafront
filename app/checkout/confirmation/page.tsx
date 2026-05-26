@@ -72,14 +72,24 @@ function ConfirmationContent() {
           </div>
         )}
 
-        {/* CTA */}
-        <a
-          href="/products"
-          className="h-12 px-8 rounded-2xl flex items-center text-[#0a0a0a] text-base font-medium"
-          style={{ background: GRADIENT }}
-        >
-          {t.checkout.confirm.continueShopping}
-        </a>
+        {/* CTAs */}
+        <div className="flex flex-col sm:flex-row items-center gap-3">
+          {orderId && (
+            <a
+              href={`/orders/${orderId}/track`}
+              className="h-12 px-8 rounded-2xl flex items-center text-[#0a0a0a] text-base font-medium"
+              style={{ background: GRADIENT }}
+            >
+              {t.checkout.confirm.trackOrder}
+            </a>
+          )}
+          <a
+            href="/products"
+            className="h-12 px-8 rounded-2xl flex items-center text-white text-base font-medium border border-[rgba(255,255,255,0.1)] hover:bg-white/5 transition-colors"
+          >
+            {t.checkout.confirm.continueShopping}
+          </a>
+        </div>
       </div>
     </PageWrapper>
   );

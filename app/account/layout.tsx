@@ -28,6 +28,15 @@ const TABS = [
     ),
   },
   {
+    key: "builds",
+    href: "/account/builds",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+      </svg>
+    ),
+  },
+  {
     key: "profile",
     href: "/account/profile",
     icon: (
@@ -59,6 +68,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
   const tabLabels: Record<string, string> = {
     orders: t.account.orders,
     wishlist: t.account.wishlist,
+    builds: t.account.myBuilds,
     profile: t.account.profile,
   };
 

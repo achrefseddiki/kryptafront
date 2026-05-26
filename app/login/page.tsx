@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ASSETS, GRADIENT } from "../lib/assets";
 import { useAuth } from "../lib/auth-context";
 import { useT } from "../lib/language-context";
@@ -9,18 +9,21 @@ import PageWrapper from "../components/PageWrapper";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
-export default function LoginPage() {
+function LoginContent() {
   const { login, loading: authLoading, isAuthenticated } = useAuth();
   const t = useT();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") ?? "/";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (!authLoading && isAuthenticated) router.replace("/");
-  }, [authLoading, isAuthenticated, router]);
+    if (!authLoading && isAuthenticated) router.replace(redirect);
+  }, [authLoading, isAuthenticated, router, redirect]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -28,7 +31,7 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       await login(email, password);
-      router.push("/");
+      router.push(redirect);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
@@ -132,5 +135,13 @@ export default function LoginPage() {
         </div>
       </div>
     </PageWrapper>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginContent />
+    </Suspense>
   );
 }

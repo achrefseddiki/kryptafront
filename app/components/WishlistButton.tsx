@@ -2,11 +2,19 @@
 import { useWishlist } from "../lib/wishlist-context";
 import { useAuth } from "../lib/auth-context";
 import { useRouter } from "next/navigation";
+import { useT } from "../lib/language-context";
 
-export default function WishlistButton({ productId, className = "" }: { productId: string; className?: string }) {
+interface WishlistButtonProps {
+  productId: string;
+  className?: string;
+  showLabel?: boolean;
+}
+
+export default function WishlistButton({ productId, className = "", showLabel = false }: WishlistButtonProps) {
   const { isAuthenticated } = useAuth();
   const { isWishlisted, toggle } = useWishlist();
   const router = useRouter();
+  const t = useT();
   const saved = isWishlisted(productId);
 
   function handleClick(e: React.MouseEvent) {
@@ -14,6 +22,25 @@ export default function WishlistButton({ productId, className = "" }: { productI
     e.stopPropagation();
     if (!isAuthenticated) { router.push("/login"); return; }
     toggle(productId);
+  }
+
+  if (showLabel) {
+    return (
+      <button
+        onClick={handleClick}
+        aria-label={saved ? "Remove from wishlist" : "Add to wishlist"}
+        className={`flex items-center justify-center gap-2 rounded-2xl border transition-all ${
+          saved
+            ? "bg-[#00f5ff]/10 border-[#00f5ff]/40 text-[#00f5ff]"
+            : "bg-transparent border-[rgba(255,255,255,0.15)] text-[#a0a0a0] hover:border-[rgba(255,255,255,0.3)] hover:text-white"
+        } ${className}`}
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill={saved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+        <span>{saved ? t.product_detail.wishlisted : t.product_detail.addToWishlist}</span>
+      </button>
+    );
   }
 
   return (

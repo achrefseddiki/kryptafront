@@ -4,6 +4,7 @@ import { GRADIENT } from "../../lib/assets";
 import { api } from "../../lib/api";
 import { getLocale, getDict } from "../../lib/i18n";
 import AddToCartButton from "../../components/AddToCartButton";
+import CompareButton from "../../components/CompareButton";
 import ProductSearchBar from "../../components/ProductSearchBar";
 import ProductSidebar from "../../components/ProductSidebar";
 import ProductPagination from "../../components/ProductPagination";
@@ -131,42 +132,48 @@ export default async function CategoryPage({
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-                {products.map(({ id, slug, name, brand: productBrand, price, oldPrice, img, badge, specs }) => (
-                  <a
+                {products.map(({ id, slug, name, brand: productBrand, price, oldPrice, img, badge, specs, inStock }) => (
+                  <div
                     key={id}
-                    href={`/products/${encodeURIComponent(category)}/${encodeURIComponent(slug)}`}
-                    className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl overflow-hidden hover:border-[rgba(255,255,255,0.2)] transition-colors group"
+                    className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl overflow-hidden hover:border-[rgba(255,255,255,0.2)] transition-colors group flex flex-col"
                   >
-                    <div className="relative w-full h-[200px] overflow-hidden bg-[#111]">
-                      <img src={img} alt={name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                      {badge && (
-                        <span
-                          className="absolute top-3 left-3 text-[10px] font-bold text-[#0a0a0a] px-2 py-0.5 rounded"
-                          style={{ background: GRADIENT }}
-                        >
-                          {badge}
-                        </span>
-                      )}
-                    </div>
-                    <div className="p-5 flex flex-col gap-3">
-                      <div>
-                        <p className="text-[#a0a0a0] text-xs font-normal uppercase tracking-wider">{productBrand}</p>
-                        <h3 className="text-white text-base font-medium leading-tight mt-1">{name}</h3>
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {specs.map((s) => (
-                          <span key={s} className="text-[10px] text-[#a0a0a0] border border-[rgba(255,255,255,0.1)] rounded px-1.5 py-0.5">
-                            {s}
+                    <a href={`/products/${encodeURIComponent(category)}/${encodeURIComponent(slug)}`} className="flex flex-col flex-1">
+                      <div className="relative w-full h-[200px] overflow-hidden bg-[#111] shrink-0">
+                        <img src={img} alt={name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        {badge && (
+                          <span
+                            className="absolute top-3 left-3 text-[10px] font-bold text-[#0a0a0a] px-2 py-0.5 rounded"
+                            style={{ background: GRADIENT }}
+                          >
+                            {badge}
                           </span>
-                        ))}
+                        )}
+                        <div className="absolute top-3 right-3">
+                          <CompareButton product={{ id, slug, name, brand: productBrand, price, oldPrice: oldPrice ?? null, img, badge: badge ?? null, specs, inStock: inStock ?? true, categorySlug: category }} />
+                        </div>
                       </div>
-                      <div className="flex items-center gap-3 pt-1">
-                        <span className="text-white text-xl font-bold">{price.toLocaleString()} DT</span>
-                        {oldPrice && <span className="text-[#a0a0a0] text-sm line-through">{oldPrice.toLocaleString()} DT</span>}
+                      <div className="p-5 flex flex-col gap-3 flex-1">
+                        <div>
+                          <p className="text-[#a0a0a0] text-xs font-normal uppercase tracking-wider">{productBrand}</p>
+                          <h3 className="text-white text-base font-medium leading-tight mt-1">{name}</h3>
+                        </div>
+                        <div className="flex flex-wrap gap-1 flex-1 content-start">
+                          {specs.map((s) => (
+                            <span key={s} className="text-[10px] text-[#a0a0a0] border border-[rgba(255,255,255,0.1)] rounded px-1.5 py-0.5 h-fit">
+                              {s}
+                            </span>
+                          ))}
+                        </div>
+                        <div className="flex items-center gap-3 pt-1">
+                          <span className="text-white text-xl font-bold">{price.toLocaleString()} DT</span>
+                          {oldPrice && <span className="text-[#a0a0a0] text-sm line-through">{oldPrice.toLocaleString()} DT</span>}
+                        </div>
                       </div>
+                    </a>
+                    <div className="px-5 pb-5">
                       <AddToCartButton product={{ id, slug, name, price, img }} />
                     </div>
-                  </a>
+                  </div>
                 ))}
               </div>
             )}

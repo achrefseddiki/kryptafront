@@ -36,6 +36,11 @@ async function authGet<T>(path: string): Promise<T> {
   return res.json();
 }
 
+async function parseJsonSafe(res: Response) {
+  const text = await res.text();
+  return text ? JSON.parse(text) : undefined;
+}
+
 async function authPatch<T>(path: string, body: unknown): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
     method: 'PATCH',
@@ -43,9 +48,9 @@ async function authPatch<T>(path: string, body: unknown): Promise<T> {
     body: JSON.stringify(body),
     cache: 'no-store',
   });
-  const data = await res.json();
+  const data = await parseJsonSafe(res);
   if (!res.ok) {
-    const msg = Array.isArray(data.message) ? data.message[0] : data.message;
+    const msg = data && (Array.isArray(data.message) ? data.message[0] : data.message);
     throw new Error(msg ?? `API error ${res.status}`);
   }
   return data;
@@ -58,9 +63,9 @@ async function authPost<T>(path: string, body: unknown): Promise<T> {
     body: JSON.stringify(body),
     cache: 'no-store',
   });
-  const data = await res.json();
+  const data = await parseJsonSafe(res);
   if (!res.ok) {
-    const msg = Array.isArray(data.message) ? data.message[0] : data.message;
+    const msg = data && (Array.isArray(data.message) ? data.message[0] : data.message);
     throw new Error(msg ?? `API error ${res.status}`);
   }
   return data;
@@ -94,7 +99,9 @@ export interface Order {
   notes: string | null;
   items: OrderLineItem[];
   subtotal: number;
+  discountAmount: number;
   total: number;
+  promoCode: string | null;
   status: string;
   createdAt: string;
 }
@@ -110,6 +117,7 @@ export interface CreateOrderPayload {
   items: OrderLineItem[];
   userId?: string;
   email?: string;
+  promoCode?: string;
 }
 
 export interface UpdateProfilePayload {
@@ -159,6 +167,8 @@ export const api = {
     get: (id: string) => get<Product>(`/products/${id}`),
     getBySlug: (slug: string) => get<Product>(`/products/slug/${slug}`),
     reviews: (productId: string) => get<Review[]>(`/products/${productId}/reviews`),
+    createReview: (productId: string, body: { rating: number; body: string }) =>
+      authPost<Review>(`/products/${productId}/reviews`, body),
   },
   blogPosts: {
     list: (category?: string) =>
@@ -200,6 +210,10 @@ export const api = {
     get: (id: string) => get<Order>(`/orders/${id}`),
     myOrders: () => authGet<Order[]>('/orders/my'),
   },
+  promoCodes: {
+    validate: (code: string, userId?: string) =>
+      post<{ code: string; discountPercent: number }>('/promo-codes/validate', { code, userId }),
+  },
   repairRequests: {
     create: (payload: { name: string; email: string; address: string; phone: string; type: string; details: string }) =>
       post<{ id: string }>('/repair-requests', payload),
@@ -211,6 +225,7 @@ export const api = {
     list: () => authGet<Product[]>('/users/me/wishlist'),
     add: (productId: string) => authPost<void>(`/users/me/wishlist/${productId}`, {}),
     remove: (productId: string) => authDelete(`/users/me/wishlist/${productId}`),
+    getPublic: (userId: string) => get<{ firstName: string; products: Product[] }>(`/users/${userId}/wishlist`),
   },
   admin: {
     categories: {

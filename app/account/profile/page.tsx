@@ -6,17 +6,30 @@ import { useAuth } from "../../lib/auth-context";
 import { api } from "../../lib/api";
 import { GRADIENT } from "../../lib/assets";
 
-function Field({ label, value, onChange, type = "text", disabled, note }: {
-  label: string; value: string; onChange?: (v: string) => void;
-  type?: string; disabled?: boolean; note?: string;
+function Field({
+  label,
+  value,
+  onChange,
+  type = "text",
+  disabled,
+  note,
+}: {
+  label: string;
+  value: string;
+  onChange?: (v: string) => void;
+  type?: string;
+  disabled?: boolean;
+  note?: string;
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-[#a0a0a0] text-xs uppercase tracking-wider">{label}</label>
+      <label className="text-[#a0a0a0] text-xs uppercase tracking-wider">
+        {label}
+      </label>
       <input
         type={type}
         value={value}
-        onChange={e => onChange?.(e.target.value)}
+        onChange={(e) => onChange?.(e.target.value)}
         disabled={disabled}
         className="bg-[#111] border border-[rgba(255,255,255,0.1)] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-[#00f5ff]/50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
       />
@@ -46,7 +59,9 @@ export default function AccountProfilePage() {
 
   async function handleSaveProfile(e: React.FormEvent) {
     e.preventDefault();
-    setProfileMsg(""); setProfileError(""); setSavingProfile(true);
+    setProfileMsg("");
+    setProfileError("");
+    setSavingProfile(true);
     try {
       await api.users.updateProfile({ firstName, lastName });
       setProfileMsg(t.account.profileSaved);
@@ -55,7 +70,10 @@ export default function AccountProfilePage() {
         const raw = sessionStorage.getItem("krypta_user");
         if (raw) {
           const cached = JSON.parse(raw);
-          sessionStorage.setItem("krypta_user", JSON.stringify({ ...cached, firstName, lastName }));
+          sessionStorage.setItem(
+            "krypta_user",
+            JSON.stringify({ ...cached, firstName, lastName }),
+          );
         }
       } catch {}
     } catch (err) {
@@ -67,13 +85,22 @@ export default function AccountProfilePage() {
 
   async function handleSavePassword(e: React.FormEvent) {
     e.preventDefault();
-    setPwMsg(""); setPwError("");
-    if (newPw !== confirmPw) { setPwError(t.account.passwordMismatch); return; }
+    setPwMsg("");
+    setPwError("");
+    if (newPw !== confirmPw) {
+      setPwError(t.account.passwordMismatch);
+      return;
+    }
     setSavingPw(true);
     try {
-      await api.users.updateProfile({ currentPassword: currentPw, newPassword: newPw });
+      await api.users.updateProfile({
+        currentPassword: currentPw,
+        newPassword: newPw,
+      });
       setPwMsg(t.account.passwordSaved);
-      setCurrentPw(""); setNewPw(""); setConfirmPw("");
+      setCurrentPw("");
+      setNewPw("");
+      setConfirmPw("");
     } catch (err) {
       setPwError(err instanceof Error ? err.message : "Error");
     } finally {
@@ -82,19 +109,36 @@ export default function AccountProfilePage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-[600px]">
+    <div className="flex flex-col gap-6">
       {/* Personal info */}
       <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.08)] rounded-2xl p-8 flex flex-col gap-6">
-        <h2 className="text-white text-lg font-medium">{t.account.profileTitle}</h2>
+        <h2 className="text-white text-lg font-medium">
+          {t.account.profileTitle}
+        </h2>
         <form onSubmit={handleSaveProfile} className="flex flex-col gap-4">
           <div className="grid grid-cols-2 gap-4">
-            <Field label={t.account.firstName} value={firstName} onChange={setFirstName} />
-            <Field label={t.account.lastName} value={lastName} onChange={setLastName} />
+            <Field
+              label={t.account.firstName}
+              value={firstName}
+              onChange={setFirstName}
+            />
+            <Field
+              label={t.account.lastName}
+              value={lastName}
+              onChange={setLastName}
+            />
           </div>
-          <Field label={t.account.email} value={user?.email ?? ""} disabled note={t.account.emailNote} />
+          <Field
+            label={t.account.email}
+            value={user?.email ?? ""}
+            disabled
+            note={t.account.emailNote}
+          />
 
           {profileMsg && <p className="text-green-400 text-sm">{profileMsg}</p>}
-          {profileError && <p className="text-red-400 text-sm">{profileError}</p>}
+          {profileError && (
+            <p className="text-red-400 text-sm">{profileError}</p>
+          )}
 
           <button
             type="submit"
@@ -109,15 +153,32 @@ export default function AccountProfilePage() {
 
       {/* Password */}
       <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.08)] rounded-2xl p-8 flex flex-col gap-6">
-        <h2 className="text-white text-lg font-medium">{t.account.passwordTitle}</h2>
+        <h2 className="text-white text-lg font-medium">
+          {t.account.passwordTitle}
+        </h2>
 
         {user && (user as any).provider && !(user as any).password ? (
           <p className="text-[#a0a0a0] text-sm">{t.account.socialAccount}</p>
         ) : (
           <form onSubmit={handleSavePassword} className="flex flex-col gap-4">
-            <Field label={t.account.currentPassword} value={currentPw} onChange={setCurrentPw} type="password" />
-            <Field label={t.account.newPassword} value={newPw} onChange={setNewPw} type="password" />
-            <Field label={t.account.confirmPassword} value={confirmPw} onChange={setConfirmPw} type="password" />
+            <Field
+              label={t.account.currentPassword}
+              value={currentPw}
+              onChange={setCurrentPw}
+              type="password"
+            />
+            <Field
+              label={t.account.newPassword}
+              value={newPw}
+              onChange={setNewPw}
+              type="password"
+            />
+            <Field
+              label={t.account.confirmPassword}
+              value={confirmPw}
+              onChange={setConfirmPw}
+              type="password"
+            />
 
             {pwMsg && <p className="text-green-400 text-sm">{pwMsg}</p>}
             {pwError && <p className="text-red-400 text-sm">{pwError}</p>}

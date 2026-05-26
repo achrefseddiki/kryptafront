@@ -16,6 +16,7 @@ export interface Product {
   images: string[];
   badge: string | null;
   specs: string[];
+  description: string | null;
   inStock: boolean;
   categorySlug: string;
   reviews?: Review[];
@@ -52,6 +53,7 @@ export interface Drop {
 export interface Review {
   id: string;
   author: string;
+  userId: string | null;
   rating: number;
   body: string;
   productId: string;

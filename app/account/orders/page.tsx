@@ -91,8 +91,23 @@ export default function AccountOrdersPage() {
             </div>
 
             {/* Total + action */}
-            <div className="flex items-center gap-6 shrink-0">
-              <span className="text-white font-bold text-lg">{order.total.toLocaleString()} DT</span>
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="flex flex-col items-end gap-1">
+                <span className="text-white font-bold text-lg">{order.total.toLocaleString()} DT</span>
+                {order.promoCode && order.discountAmount > 0 && (
+                  <span className="text-xs text-[#00f5ff] flex items-center gap-1">
+                    <span className="font-mono font-bold">{order.promoCode}</span>
+                    <span className="text-[#666]">−{order.discountAmount.toLocaleString()} DT</span>
+                  </span>
+                )}
+              </div>
+              <Link
+                href={`/orders/${order.id}/track`}
+                className="h-9 px-4 rounded-xl text-[#0a0a0a] text-sm font-medium flex items-center whitespace-nowrap"
+                style={{ background: GRADIENT }}
+              >
+                {t.account.trackOrder}
+              </Link>
               <Link
                 href={`/checkout/confirmation?id=${order.id}`}
                 className="h-9 px-4 rounded-xl border border-[rgba(255,255,255,0.1)] text-white text-sm hover:bg-white/5 transition-colors flex items-center"

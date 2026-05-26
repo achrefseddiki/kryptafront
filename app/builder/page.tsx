@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import PageWrapper from "../components/PageWrapper";
 import { GRADIENT } from "../lib/assets";
 import { useT } from "../lib/language-context";
+import { useCart } from "../lib/cart-context";
 import { api } from "../lib/api";
 import type { Product } from "../lib/types";
+import FPSModal from "./FPSModal";
 
 const SLOTS = [
   { slot: "CPU",  label: "Processor",     category: "cpus" },
@@ -33,11 +35,71 @@ type AiSuggestion = {
 
 export default function BuilderPage() {
   const t = useT();
+  const { addToCart } = useCart();
   const [selected, setSelected] = useState<Record<string, SelectedProduct>>({});
   const [budget, setBudget] = useState("");
   const [pickerSlot, setPickerSlot] = useState<{ slot: string; label: string; category: string } | null>(null);
   const [suggestions, setSuggestions] = useState<Record<string, AiSuggestion[]>>({});
   const [suggesting, setSuggesting] = useState<string | null>(null);
+  const [showFPS, setShowFPS] = useState(false);
+  const [cartFlash, setCartFlash] = useState(false);
+  const [saveFlash, setSaveFlash] = useState(false);
+  const [editingBuildId, setEditingBuildId] = useState<string | null>(null);
+
+  // Load a saved build when navigating from /account/builds
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const loadId = params.get("load");
+    if (!loadId) return;
+    try {
+      const builds = JSON.parse(localStorage.getItem("krypta_saved_builds") ?? "[]");
+      const build = builds.find((b: { id: string }) => b.id === loadId);
+      if (build) {
+        setSelected(build.components ?? {});
+        setBudget(build.budget ?? "");
+        setEditingBuildId(loadId);
+      }
+    } catch {}
+  }, []);
+
+  function handleAddBuildToCart() {
+    Object.values(selected).forEach(p => {
+      addToCart({ id: p.id, slug: p.slug, name: p.name, price: p.price, img: p.img });
+    });
+    setCartFlash(true);
+    setTimeout(() => setCartFlash(false), 2000);
+  }
+
+  function handleSaveBuild() {
+    const gpu = selected["GPU"];
+    const cpu = selected["CPU"];
+    const autoName = gpu
+      ? gpu.name.split(" ").slice(0, 3).join(" ") + " Build"
+      : cpu
+      ? cpu.name.split(" ").slice(0, 3).join(" ") + " Build"
+      : `Ma Config`;
+
+    try {
+      const existing: Array<{ id: string }> = JSON.parse(localStorage.getItem("krypta_saved_builds") ?? "[]");
+      const build = {
+        id: editingBuildId ?? `build_${Date.now()}`,
+        name: editingBuildId
+          ? (existing.find(b => b.id === editingBuildId) as { name?: string })?.name ?? autoName
+          : autoName,
+        components: selected,
+        budget,
+        total,
+        savedAt: new Date().toISOString(),
+      };
+      const updated = editingBuildId
+        ? existing.map(b => (b.id === editingBuildId ? build : b))
+        : [build, ...existing];
+      localStorage.setItem("krypta_saved_builds", JSON.stringify(updated));
+      if (!editingBuildId) setEditingBuildId(build.id);
+    } catch {}
+    setSaveFlash(true);
+    setTimeout(() => setSaveFlash(false), 2000);
+  }
 
   const total = Object.values(selected).reduce((sum, p) => sum + p.price, 0);
   const budgetNum = budget ? parseFloat(budget) : undefined;
@@ -283,14 +345,28 @@ export default function BuilderPage() {
               </div>
 
               <button
+                onClick={() => setShowFPS(true)}
+                className="h-12 rounded-2xl border border-[rgba(1,245,255,0.5)] text-[#00f5ff] text-base font-medium hover:bg-[#00f5ff]/10 transition-colors flex items-center justify-center gap-2"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+                Récapitulatif FPS en jeu
+              </button>
+              <button
+                onClick={handleAddBuildToCart}
                 disabled={Object.keys(selected).length === 0}
-                className="h-12 rounded-2xl text-[#0a0a0a] text-base font-medium disabled:opacity-40"
+                className="h-12 rounded-2xl text-[#0a0a0a] text-base font-medium disabled:opacity-40 transition-opacity"
                 style={{ background: GRADIENT, filter: "drop-shadow(0px 6px 6px rgba(1,245,255,0.2))" }}
               >
-                {t.builder.addBuildToCart}
+                {cartFlash ? "Ajouté au panier ✓" : t.builder.addBuildToCart}
               </button>
-              <button className="h-12 rounded-2xl border border-[#00f5ff] text-[#00f5ff] text-base font-medium hover:bg-[#00f5ff]/10 transition-colors">
-                {t.builder.save}
+              <button
+                onClick={handleSaveBuild}
+                disabled={Object.keys(selected).length === 0}
+                className="h-12 rounded-2xl border border-[#00f5ff] text-[#00f5ff] text-base font-medium hover:bg-[#00f5ff]/10 transition-colors disabled:opacity-40"
+              >
+                {saveFlash ? "Sauvegardé ✓" : t.builder.save}
               </button>
             </div>
 
@@ -315,6 +391,11 @@ export default function BuilderPage() {
           onSelect={(product) => handleSelect(pickerSlot.slot, product)}
           onClose={() => setPickerSlot(null)}
         />
+      )}
+
+      {/* FPS summary modal */}
+      {showFPS && (
+        <FPSModal selected={selected} onClose={() => setShowFPS(false)} />
       )}
     </PageWrapper>
   );

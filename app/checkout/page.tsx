@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import PageWrapper from "../components/PageWrapper";
 import { GRADIENT } from "../lib/assets";
@@ -24,14 +24,53 @@ const EMPTY = {
 export default function CheckoutPage() {
   const t = useT();
   const router = useRouter();
-  const { items, total, itemCount, clearCart } = useCart();
-  const { user } = useAuth();
+  const { items, total, itemCount, clearCart, promo: cartPromo, setPromo: setCartPromo } = useCart();
+  const { user, loading, isAuthenticated } = useAuth();
 
-  const [form, setForm] = useState(() => ({ ...EMPTY, email: user?.email ?? "" }));
+  const [form, setForm] = useState(EMPTY);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [promoInput, setPromoInput] = useState(cartPromo?.code ?? "");
+  const [promoState, setPromoState] = useState<{ code: string; discountPercent: number } | null>(cartPromo);
+  const [promoError, setPromoError] = useState("");
+  const [promoChecking, setPromoChecking] = useState(false);
+
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      router.replace("/login?redirect=/checkout");
+    }
+  }, [loading, isAuthenticated, router]);
+
+  useEffect(() => {
+    if (user) {
+      setForm(f => ({
+        ...f,
+        firstName: f.firstName || user.firstName,
+        lastName: f.lastName || user.lastName,
+        email: f.email || user.email,
+      }));
+    }
+  }, [user]);
 
   const set = (k: keyof typeof EMPTY, v: string) => setForm(f => ({ ...f, [k]: v }));
+
+  const discountAmount = promoState ? Math.round(total * promoState.discountPercent / 100 * 100) / 100 : 0;
+  const finalTotal = Math.max(0, total - discountAmount);
+
+  async function applyPromo(e?: React.SyntheticEvent) {
+    e?.preventDefault();
+    if (!promoInput.trim()) return;
+    setPromoError(""); setPromoState(null); setCartPromo(null); setPromoChecking(true);
+    try {
+      const result = await api.promoCodes.validate(promoInput.trim(), user?.id);
+      setPromoState(result);
+      setCartPromo(result);
+    } catch (err) {
+      setPromoError(err instanceof Error ? err.message : "Invalid code");
+    } finally {
+      setPromoChecking(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -55,6 +94,7 @@ export default function CheckoutPage() {
         })),
         userId: user?.id,
         email: form.email || undefined,
+        promoCode: promoState?.code,
       });
       clearCart();
       router.push(`/checkout/confirmation?id=${order.id}`);
@@ -63,6 +103,14 @@ export default function CheckoutPage() {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  if (loading || !isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#00f5ff] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
   }
 
   return (
@@ -184,18 +232,52 @@ export default function CheckoutPage() {
                     ))}
                   </div>
 
+                  {/* Promo code */}
+                  <div className="flex flex-col gap-2">
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={promoInput}
+                        onChange={e => { setPromoInput(e.target.value.toUpperCase()); setPromoError(""); setPromoState(null); setCartPromo(null); }}
+                        onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); applyPromo(e as never); } }}
+                        placeholder="Promo code"
+                        className="flex-1 bg-[#111] border border-[rgba(255,255,255,0.1)] rounded-xl px-3 py-2.5 text-white text-sm placeholder:text-[#555] outline-none focus:border-[#00f5ff]/50 transition-colors uppercase"
+                      />
+                      <button
+                        type="button"
+                        onClick={e => applyPromo(e as never)}
+                        disabled={promoChecking || !promoInput.trim()}
+                        className="px-4 rounded-xl border border-[rgba(255,255,255,0.1)] text-white text-sm hover:bg-white/5 transition-colors disabled:opacity-40 whitespace-nowrap"
+                      >
+                        {promoChecking ? "…" : "Apply"}
+                      </button>
+                    </div>
+                    {promoError && <p className="text-red-400 text-xs">{promoError}</p>}
+                    {promoState && (
+                      <p className="text-green-400 text-xs">
+                        ✓ {promoState.code} — {promoState.discountPercent}% off applied
+                      </p>
+                    )}
+                  </div>
+
                   <div className="border-t border-[rgba(255,255,255,0.08)] pt-4 flex flex-col gap-3">
                     <div className="flex justify-between text-sm">
                       <span className="text-[#a0a0a0]">{t.checkout.subtotal}</span>
                       <span className="text-white">{total.toLocaleString()} DT</span>
                     </div>
+                    {promoState && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-green-400">Discount ({promoState.discountPercent}%)</span>
+                        <span className="text-green-400">−{discountAmount.toLocaleString()} DT</span>
+                      </div>
+                    )}
                     <div className="flex justify-between text-sm">
                       <span className="text-[#a0a0a0]">{t.checkout.shipping}</span>
                       <span className="text-green-400">{t.checkout.free}</span>
                     </div>
                     <div className="border-t border-[rgba(255,255,255,0.08)] pt-3 flex justify-between">
                       <span className="text-white font-medium">{t.checkout.total}</span>
-                      <span className="text-white text-xl font-bold">{total.toLocaleString()} DT</span>
+                      <span className="text-white text-xl font-bold">{finalTotal.toLocaleString()} DT</span>
                     </div>
                   </div>
 
