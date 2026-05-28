@@ -77,11 +77,11 @@ export default async function ProductDetailPage({
 
             <div className="flex items-center gap-4">
               <span className="text-3xl lg:text-[40px] font-bold text-white">
-                {product.price.toLocaleString()} DT
+                {product.price} DT
               </span>
               {product.oldPrice && (
                 <span className="text-[#a0a0a0] text-xl line-through">
-                  {product.oldPrice.toLocaleString()} DT
+                  {product.oldPrice} DT
                 </span>
               )}
             </div>

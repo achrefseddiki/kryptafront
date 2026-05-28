@@ -62,12 +62,12 @@ function ConfirmationContent() {
                   <p className="text-white text-sm font-medium truncate">{item.name}</p>
                   <p className="text-[#a0a0a0] text-xs mt-0.5">× {item.qty}</p>
                 </div>
-                <span className="text-white text-sm font-bold shrink-0">{(item.price * item.qty).toLocaleString()} DT</span>
+                <span className="text-white text-sm font-bold shrink-0">{(item.price * item.qty)} DT</span>
               </div>
             ))}
             <div className="border-t border-[rgba(255,255,255,0.08)] pt-4 flex justify-between">
               <span className="text-white font-medium">{t.checkout.total}</span>
-              <span className="text-white text-xl font-bold">{order.total.toLocaleString()} DT</span>
+              <span className="text-white text-xl font-bold">{order.total} DT</span>
             </div>
           </div>
         )}

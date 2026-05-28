@@ -8,11 +8,11 @@ import type { Review } from "../../lib/types";
 import { useAuth } from "../../lib/auth-context";
 
 interface Props {
-  offerId: string;
+  buildId: string;
   initialReviews: Review[];
 }
 
-export default function OfferReviews({ offerId, initialReviews }: Props) {
+export default function BuildReviews({ buildId, initialReviews }: Props) {
   const { user, isAuthenticated } = useAuth();
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
   const [rating, setRating] = useState(0);
@@ -30,25 +30,25 @@ export default function OfferReviews({ offerId, initialReviews }: Props) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (rating === 0) { setSubmitError("Veuillez sélectionner une note."); return; }
-    if (!body.trim()) { setSubmitError("Veuillez écrire un commentaire."); return; }
+    if (rating === 0) { setSubmitError("Please select a rating."); return; }
+    if (!body.trim()) { setSubmitError("Please write a comment."); return; }
     setSubmitError(""); setSubmitting(true);
     try {
-      const newReview = await api.offers.createReview(offerId, { rating, body: body.trim() });
+      const newReview = await api.kryptaBuilds.createReview(buildId, { rating, body: body.trim() });
       setReviews(prev => [newReview, ...prev]);
       setRating(0); setBody(""); setSubmitted(true);
     } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : "Erreur lors de l'envoi.");
+      setSubmitError(err instanceof Error ? err.message : "Failed to submit review.");
     } finally {
       setSubmitting(false);
     }
   }
 
   return (
-    <div className="flex flex-col gap-8 pb-4">
+    <div className="flex flex-col gap-8">
       <div className="flex items-center gap-6">
         <h2 className="text-white text-xl font-bold">
-          Avis clients <span className="text-[#a0a0a0] font-normal text-base">({reviews.length})</span>
+          Customer Reviews <span className="text-[#a0a0a0] font-normal text-base">({reviews.length})</span>
         </h2>
         {reviews.length > 0 && (
           <div className="flex items-center gap-2">
@@ -68,15 +68,15 @@ export default function OfferReviews({ offerId, initialReviews }: Props) {
             <span className="size-5 rounded-full bg-green-500 flex items-center justify-center text-white text-xs font-bold shrink-0">✓</span>
             <p className="text-green-400 text-sm font-medium">
               {submitted
-                ? `Merci pour votre avis, ${user?.firstName}!`
-                : "Vous avez déjà laissé un avis sur cette offre."}
+                ? `Thanks for your review, ${user?.firstName}!`
+                : "You've already reviewed this build."}
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.08)] rounded-2xl p-5 lg:p-6 flex flex-col gap-4">
-            <h4 className="text-white text-base font-semibold">Laisser un avis</h4>
+            <h4 className="text-white text-base font-semibold">Leave a Review</h4>
             <div className="flex flex-col gap-1.5">
-              <label className="text-[#a0a0a0] text-xs uppercase tracking-wider">Note</label>
+              <label className="text-[#a0a0a0] text-xs uppercase tracking-wider">Rating</label>
               <div className="flex items-center gap-1">
                 {[1, 2, 3, 4, 5].map(s => (
                   <button
@@ -91,11 +91,11 @@ export default function OfferReviews({ offerId, initialReviews }: Props) {
               </div>
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-[#a0a0a0] text-xs uppercase tracking-wider">Votre commentaire</label>
+              <label className="text-[#a0a0a0] text-xs uppercase tracking-wider">Your Comment</label>
               <textarea
                 value={body}
                 onChange={e => setBody(e.target.value)}
-                placeholder="Partagez votre expérience avec cette offre…"
+                placeholder="Share your experience with this build…"
                 rows={4} required
                 className="bg-[#111] border border-[rgba(255,255,255,0.1)] rounded-xl px-4 py-3 text-white text-sm placeholder:text-[#555] outline-none focus:border-[#00f5ff]/50 transition-colors resize-none"
               />
@@ -106,26 +106,26 @@ export default function OfferReviews({ offerId, initialReviews }: Props) {
               className="h-11 rounded-xl text-[#0a0a0a] text-sm font-semibold disabled:opacity-50 self-start px-6"
               style={{ background: GRADIENT }}
             >
-              {submitting ? "Envoi…" : "Publier l'avis"}
+              {submitting ? "Submitting…" : "Submit Review"}
             </button>
           </form>
         )
       ) : (
         <div className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.08)] rounded-2xl p-5 flex items-center justify-between gap-4">
-          <p className="text-[#a0a0a0] text-sm">Connectez-vous pour laisser un avis.</p>
+          <p className="text-[#a0a0a0] text-sm">Sign in to leave a review.</p>
           <Link
             href="/login"
             className="h-9 px-5 rounded-xl text-[#0a0a0a] text-sm font-medium shrink-0"
             style={{ background: GRADIENT }}
           >
-            Se connecter
+            Sign in
           </Link>
         </div>
       )}
 
       <div className="flex flex-col gap-4">
         {reviews.length === 0 ? (
-          <p className="text-[#a0a0a0] text-sm">Aucun avis pour l'instant. Soyez le premier !</p>
+          <p className="text-[#a0a0a0] text-sm">No reviews yet. Be the first!</p>
         ) : (
           reviews.map(({ id, author, rating: r, body: b, createdAt }) => (
             <div key={id} className="bg-[#1a1a1a] border border-[rgba(255,255,255,0.1)] rounded-2xl p-5 lg:p-6 flex flex-col gap-3">
@@ -139,7 +139,7 @@ export default function OfferReviews({ offerId, initialReviews }: Props) {
                   </div>
                 </div>
                 <span className="text-[#555] text-xs">
-                  {new Date(createdAt).toLocaleDateString("fr-FR", { month: "short", day: "numeric", year: "numeric" })}
+                  {new Date(createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                 </span>
               </div>
               <p className="text-[#a0a0a0] text-sm leading-6">{b}</p>

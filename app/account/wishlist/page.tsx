@@ -161,7 +161,7 @@ export default function AccountWishlistPage() {
                 <h3 className="text-white text-sm font-medium leading-snug mt-0.5 line-clamp-2">{product.name}</h3>
               </div>
               <div className="flex items-center justify-between mt-auto">
-                <span className="text-white font-bold">{product.price.toLocaleString()} DT</span>
+                <span className="text-white font-bold">{product.price} DT</span>
                 <Link
                   href={`/products/${product.categorySlug}/${product.slug}`}
                   className="h-8 px-3 rounded-xl text-xs font-medium text-[#0a0a0a]"

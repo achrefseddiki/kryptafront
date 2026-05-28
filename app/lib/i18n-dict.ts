@@ -419,10 +419,10 @@ const fr = {
         {
           heading: "Support & Légal",
           items: [
-            { label: "Nous contacter", href: "/support" },
-            { label: "Livraison", href: "#" },
-            { label: "Politique de confidentialité", href: "#" },
-            { label: "Conditions d'utilisation", href: "#" },
+            { label: "Nous contacter", href: "/contact" },
+            { label: "Livraison", href: "/shipping" },
+            { label: "Politique de confidentialité", href: "/privacy-policy" },
+            { label: "Conditions d'utilisation", href: "/terms" },
           ],
         },
       ],
@@ -896,10 +896,10 @@ const en: typeof fr = {
         {
           heading: "Support & Legal",
           items: [
-            { label: "Contact Us", href: "/support" },
-            { label: "Shipping", href: "#" },
-            { label: "Privacy Policy", href: "#" },
-            { label: "Terms of Service", href: "#" },
+            { label: "Contact Us", href: "/contact" },
+            { label: "Shipping", href: "/shipping" },
+            { label: "Privacy Policy", href: "/privacy-policy" },
+            { label: "Terms of Service", href: "/terms" },
           ],
         },
       ],

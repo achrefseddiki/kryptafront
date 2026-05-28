@@ -175,7 +175,7 @@ export default function BuilderPage() {
             {budgetNum != null && total > budgetNum ? (
               <div className="bg-red-900/30 border border-red-500/30 rounded-2xl p-4 flex items-center gap-3">
                 <span className="size-2.5 rounded-full bg-red-400 shrink-0" />
-                <p className="text-red-400 text-sm font-medium">Over budget by {(total - budgetNum).toLocaleString()} DT</p>
+                <p className="text-red-400 text-sm font-medium">Over budget by {(total - budgetNum)} DT</p>
               </div>
             ) : (
               <div className="bg-green-900/30 border border-green-500/30 rounded-2xl p-4 flex items-center gap-3">
@@ -216,7 +216,7 @@ export default function BuilderPage() {
                           <p className="text-[#555] text-sm mt-0.5">{t.builder.noComponent}</p>
                         )}
                         {sel && (
-                          <p className="text-[#00f5ff] text-sm font-bold mt-0.5">{sel.price.toLocaleString()} DT</p>
+                          <p className="text-[#00f5ff] text-sm font-bold mt-0.5">{sel.price} DT</p>
                         )}
                       </div>
                     </div>
@@ -286,7 +286,7 @@ export default function BuilderPage() {
                               <p className="text-[#a0a0a0] text-xs leading-5 mt-0.5">{s.reason}</p>
                             </div>
                             <div className="shrink-0 text-right">
-                              <p className="text-white text-sm font-bold">{s.price.toLocaleString()} DT</p>
+                              <p className="text-white text-sm font-bold">{s.price} DT</p>
                               <button
                                 onClick={() => handleSelect(slotDef.slot, { id: s.productId, slug: s.slug, name: s.name, brand: s.brand, price: s.price, img: s.img, specs: s.specs })}
                                 className="mt-1 h-7 px-3 rounded-lg text-xs font-semibold text-[#0a0a0a]"
@@ -319,7 +319,7 @@ export default function BuilderPage() {
                       <span className="text-[#a0a0a0] shrink-0">{label}</span>
                       <div className="text-right min-w-0">
                         <p className="text-white text-xs truncate max-w-[160px]">{selected[slot].name}</p>
-                        <p className="text-[#00f5ff] text-xs font-bold">{selected[slot].price.toLocaleString()} DT</p>
+                        <p className="text-[#00f5ff] text-xs font-bold">{selected[slot].price} DT</p>
                       </div>
                     </div>
                   ))}
@@ -330,13 +330,13 @@ export default function BuilderPage() {
                 <div className="flex justify-between items-baseline">
                   <span className="text-[#a0a0a0] text-sm">{t.builder.estimatedTotal}</span>
                   <span className={`text-xl font-bold ${budgetNum && total > budgetNum ? "text-red-400" : "text-white"}`}>
-                    {total.toLocaleString()} DT
+                    {total} DT
                   </span>
                 </div>
                 {budgetNum != null && (
                   <div className="flex justify-between text-xs">
                     <span className="text-[#555]">Budget</span>
-                    <span className="text-[#a0a0a0]">{budgetNum.toLocaleString()} DT</span>
+                    <span className="text-[#a0a0a0]">{budgetNum} DT</span>
                   </div>
                 )}
                 <p className="text-[#555] text-xs mt-1">
@@ -458,7 +458,7 @@ function ProductPicker({ slot, onSelect, onClose }: {
                       <p className="text-[#444] text-xs mt-0.5 truncate">{p.specs.slice(0, 3).join(' · ')}</p>
                     )}
                   </div>
-                  <span className="text-white font-bold text-sm shrink-0">{p.price.toLocaleString()} DT</span>
+                  <span className="text-white font-bold text-sm shrink-0">{p.price} DT</span>
                 </button>
               ))}
             </div>

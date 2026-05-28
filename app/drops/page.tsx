@@ -46,7 +46,7 @@ export default async function DropsPage() {
                   </p>
 
                   <div className="text-3xl lg:text-4xl font-bold text-white">
-                    {liveDrop.price.toLocaleString()} <span className="text-lg font-medium text-[#a0a0a0]">DT</span>
+                    {liveDrop.price} <span className="text-lg font-medium text-[#a0a0a0]">DT</span>
                   </div>
 
                   {liveDrop.endsAt && <DropCountdown endsAt={liveDrop.endsAt} />}

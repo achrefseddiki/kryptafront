@@ -67,13 +67,25 @@ export default async function HeroSection() {
 
       {/* Promo banners */}
       <div className="flex flex-col sm:flex-row gap-5">
-        {[1, 2].map((i) => (
-          <div key={i} className="flex-1 h-[160px] sm:h-[200px] lg:h-[236px] rounded-[13px] overflow-hidden relative bg-[#625858]">
-            <button className="absolute bottom-4 right-4 bg-[rgba(255,255,255,0.31)] border-2 border-white text-white text-sm font-semibold px-3 py-2.5 rounded-[6px] hover:bg-white/40 transition-colors">
+        {[
+          { img: hero?.promoBanner1Img, href: hero?.promoBanner1Href },
+          { img: hero?.promoBanner2Img, href: hero?.promoBanner2Href },
+        ].map((banner, i) => {
+          const cls = "flex-1 h-[160px] sm:h-[200px] lg:h-[236px] rounded-[13px] overflow-hidden relative bg-[#1e1e1e]";
+          const style = banner.img
+            ? { backgroundImage: `url(${banner.img})`, backgroundSize: "cover", backgroundPosition: "center" }
+            : {};
+          const discoverBtn = banner.href ? (
+            <span className="absolute bottom-4 right-4 bg-[rgba(255,255,255,0.31)] border-2 border-white text-white text-sm font-semibold px-3 py-2.5 rounded-[6px] hover:bg-white/40 transition-colors">
               {t.home.hero.discover}
-            </button>
-          </div>
-        ))}
+            </span>
+          ) : null;
+          return banner.href ? (
+            <a key={i} href={banner.href} className={cls} style={style}>{discoverBtn}</a>
+          ) : (
+            <div key={i} className={cls} style={style} />
+          );
+        })}
       </div>
     </section>
   );

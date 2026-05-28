@@ -97,7 +97,7 @@ export default async function OfferPage({ params }: { params: Promise<{ slug: st
 
             {/* Price */}
             <div className="flex items-end gap-3">
-              <span className="text-3xl lg:text-[40px] font-bold text-white">{offer.price.toLocaleString()} DT</span>
+              <span className="text-3xl lg:text-[40px] font-bold text-white">{offer.price} DT</span>
               {offer.products.length > 0 && (
                 <span className="text-[#a0a0a0] text-sm mb-1.5">
                   · {offer.products.length} produit{offer.products.length > 1 ? "s" : ""} inclus
@@ -169,7 +169,7 @@ export default async function OfferPage({ params }: { params: Promise<{ slug: st
                   <div className="p-4 flex flex-col gap-1">
                     <p className="text-[#a0a0a0] text-xs">{product.brand}</p>
                     <p className="text-white text-sm font-medium leading-snug line-clamp-2">{product.name}</p>
-                    <p className="text-[#a0a0a0] text-sm mt-1">{product.price.toLocaleString()} DT</p>
+                    <p className="text-[#a0a0a0] text-sm mt-1">{product.price} DT</p>
                   </div>
                 </a>
               ))}

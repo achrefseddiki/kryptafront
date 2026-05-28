@@ -165,8 +165,8 @@ export default async function CategoryPage({
                           ))}
                         </div>
                         <div className="flex items-center gap-3 pt-1">
-                          <span className="text-white text-xl font-bold">{price.toLocaleString()} DT</span>
-                          {oldPrice && <span className="text-[#a0a0a0] text-sm line-through">{oldPrice.toLocaleString()} DT</span>}
+                          <span className="text-white text-xl font-bold">{price} DT</span>
+                          {oldPrice && <span className="text-[#a0a0a0] text-sm line-through">{oldPrice} DT</span>}
                         </div>
                       </div>
                     </a>

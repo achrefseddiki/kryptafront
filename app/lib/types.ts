@@ -87,6 +87,7 @@ export interface KryptaBuild {
   name: string;
   tagline: string | null;
   badge: string | null;
+  description: string | null;
   price: number;
   img: string | null;
   images: string[];
@@ -97,6 +98,27 @@ export interface KryptaBuild {
   features: string[];
   inStock: boolean;
   createdAt: string;
+}
+
+export interface Shop {
+  id: string;
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+  phone: string | null;
+  email: string | null;
+  hours: string | null;
+  img: string | null;
+  createdAt: string;
+}
+
+export interface SearchResults {
+  products: Pick<Product, 'id' | 'slug' | 'name' | 'brand' | 'price' | 'img' | 'categorySlug'>[];
+  builds: Pick<KryptaBuild, 'id' | 'name' | 'tagline' | 'price' | 'img'>[];
+  offers: { id: string; slug: string | null; title: string; price: number; img: string | null }[];
+  blogPosts: { slug: string; title: string; img: string; category: string }[];
+  drops: { id: string; title: string; img: string; status: string }[];
 }
 
 export interface HeroContent {
@@ -113,4 +135,8 @@ export interface HeroContent {
   btn2LabelEn: string | null;
   btn2LabelFr: string | null;
   btn2Href: string | null;
+  promoBanner1Img: string | null;
+  promoBanner1Href: string | null;
+  promoBanner2Img: string | null;
+  promoBanner2Href: string | null;
 }

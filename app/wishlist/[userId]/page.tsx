@@ -72,7 +72,7 @@ export default async function PublicWishlistPage({
                 <div className="p-4 flex flex-col gap-2">
                   <p className="text-[#a0a0a0] text-xs">{product.brand}</p>
                   <h3 className="text-white text-sm font-medium leading-snug line-clamp-2">{product.name}</h3>
-                  <p className="text-white font-bold mt-1">{product.price.toLocaleString()} DT</p>
+                  <p className="text-white font-bold mt-1">{product.price} DT</p>
                 </div>
               </Link>
             ))}

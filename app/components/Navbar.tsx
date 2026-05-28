@@ -7,6 +7,7 @@ import NavProfileButton from "./NavProfileButton";
 import NavCategoryBar from "./NavCategoryBar";
 import NavLanguageSwitcher from "./NavLanguageSwitcher";
 import MobileNavDrawer from "./MobileNavDrawer";
+import GlobalSearch from "./GlobalSearch";
 
 export default async function Navbar() {
   const [allCategories, locale] = await Promise.all([
@@ -35,16 +36,7 @@ export default async function Navbar() {
 
         {/* Search — desktop only */}
         <div className="hidden lg:flex relative flex-1 max-w-[590px]">
-          <img
-            src={ASSETS.iconSearch}
-            alt=""
-            className="absolute left-5 top-1/2 -translate-y-1/2 size-5 z-10 pointer-events-none"
-          />
-          <input
-            type="search"
-            placeholder={t.nav.search}
-            className="w-full bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] rounded-full pl-14 pr-6 py-3 text-sm text-[rgba(255,255,255,0.5)] placeholder:text-[rgba(255,255,255,0.5)] outline-none focus:border-[#00f5ff] transition-colors"
-          />
+          <GlobalSearch placeholder={t.nav.search} />
         </div>
 
         {/* Desktop actions */}
@@ -107,7 +99,7 @@ export default async function Navbar() {
             </Link>
           ))}
         </nav>
-        <a href="#" className="flex items-center gap-0.5 text-white text-sm font-medium shrink-0">
+        <a href="/locations" className="flex items-center gap-0.5 text-white text-sm font-medium hover:text-[#00f5ff] transition-colors shrink-0">
           <img src={ASSETS.iconLocation} alt="" className="size-5" />
           <span>{t.nav.location}</span>
         </a>

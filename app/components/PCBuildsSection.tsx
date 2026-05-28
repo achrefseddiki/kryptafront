@@ -38,7 +38,7 @@ export default async function PCBuildsSection() {
             <div className="p-4 sm:p-6 flex flex-col gap-1 sm:gap-2">
               <h3 className="text-white text-base sm:text-2xl font-medium leading-snug">{product.name}</h3>
               <p className="text-white text-xl sm:text-[32px] font-bold leading-tight sm:leading-[44.8px]">
-                {product.price.toLocaleString()} DT
+                {product.price} DT
               </p>
             </div>
           </a>

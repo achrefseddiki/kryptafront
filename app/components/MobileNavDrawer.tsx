@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ASSETS, GRADIENT } from "../lib/assets";
 import type { Category } from "../lib/types";
 import NavLanguageSwitcher from "./NavLanguageSwitcher";
+import GlobalSearch from "./GlobalSearch";
 
 interface Props {
   categories: Category[];
@@ -20,19 +21,10 @@ interface Props {
 export default function MobileNavDrawer({ categories, t }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
-  const [query, setQuery] = useState("");
   const router = useRouter();
 
   const roots = categories.filter((c) => !c.parentSlug);
   const childrenOf = (slug: string) => categories.filter((c) => c.parentSlug === slug);
-
-  function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
-    if (query.trim()) {
-      router.push(`/products?search=${encodeURIComponent(query.trim())}`);
-      setIsOpen(false);
-    }
-  }
 
   function close() {
     setIsOpen(false);
@@ -82,22 +74,13 @@ export default function MobileNavDrawer({ categories, t }: Props) {
         </div>
 
         {/* Search */}
-        <form onSubmit={handleSearch} className="px-5 pt-5 pb-3">
-          <div className="relative">
-            <img
-              src={ASSETS.iconSearch}
-              alt=""
-              className="absolute left-4 top-1/2 -translate-y-1/2 size-4 pointer-events-none opacity-50"
-            />
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder={t.search}
-              className="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-2.5 text-sm text-white/70 placeholder:text-white/40 outline-none focus:border-[#00f5ff] transition-colors"
-            />
-          </div>
-        </form>
+        <div className="px-5 pt-5 pb-3">
+          <GlobalSearch
+            placeholder={t.search}
+            onNavigate={close}
+            inputClassName="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-2.5 text-sm text-white/70 placeholder:text-white/40 outline-none focus:border-[#00f5ff] transition-colors"
+          />
+        </div>
 
         {/* Primary links */}
         <nav className="px-5 py-3 flex flex-col gap-1 border-b border-white/[0.06]">

@@ -227,7 +227,7 @@ export default function CheckoutPage() {
                           <p className="text-white text-sm font-medium truncate">{name}</p>
                           <p className="text-[#a0a0a0] text-xs mt-0.5">× {qty}</p>
                         </div>
-                        <span className="text-white text-sm font-bold shrink-0">{(price * qty).toLocaleString()} DT</span>
+                        <span className="text-white text-sm font-bold shrink-0">{(price * qty)} DT</span>
                       </div>
                     ))}
                   </div>
@@ -263,12 +263,12 @@ export default function CheckoutPage() {
                   <div className="border-t border-[rgba(255,255,255,0.08)] pt-4 flex flex-col gap-3">
                     <div className="flex justify-between text-sm">
                       <span className="text-[#a0a0a0]">{t.checkout.subtotal}</span>
-                      <span className="text-white">{total.toLocaleString()} DT</span>
+                      <span className="text-white">{total} DT</span>
                     </div>
                     {promoState && (
                       <div className="flex justify-between text-sm">
                         <span className="text-green-400">Discount ({promoState.discountPercent}%)</span>
-                        <span className="text-green-400">−{discountAmount.toLocaleString()} DT</span>
+                        <span className="text-green-400">−{discountAmount} DT</span>
                       </div>
                     )}
                     <div className="flex justify-between text-sm">
@@ -277,7 +277,7 @@ export default function CheckoutPage() {
                     </div>
                     <div className="border-t border-[rgba(255,255,255,0.08)] pt-3 flex justify-between">
                       <span className="text-white font-medium">{t.checkout.total}</span>
-                      <span className="text-white text-xl font-bold">{finalTotal.toLocaleString()} DT</span>
+                      <span className="text-white text-xl font-bold">{finalTotal} DT</span>
                     </div>
                   </div>
 

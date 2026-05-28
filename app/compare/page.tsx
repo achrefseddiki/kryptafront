@@ -27,8 +27,8 @@ function AddToCartBtn({ product }: { product: CompareProduct }) {
 }
 
 const KEY_ROWS: { label: string; render: (p: CompareProduct) => React.ReactNode }[] = [
-  { label: "Prix", render: p => <span className="text-white font-bold">{p.price.toLocaleString()} DT</span> },
-  { label: "Ancien prix", render: p => p.oldPrice ? <span className="text-[#a0a0a0] line-through">{p.oldPrice.toLocaleString()} DT</span> : <span className="text-[#444]">—</span> },
+  { label: "Prix", render: p => <span className="text-white font-bold">{p.price} DT</span> },
+  { label: "Ancien prix", render: p => p.oldPrice ? <span className="text-[#a0a0a0] line-through">{p.oldPrice} DT</span> : <span className="text-[#444]">—</span> },
   { label: "Marque", render: p => <span className="text-white">{p.brand}</span> },
   { label: "Catégorie", render: p => <Link href={`/products/${p.categorySlug}`} className="text-[#00f5ff] hover:underline capitalize">{p.categorySlug.replace(/-/g, " ")}</Link> },
   { label: "En stock", render: p => p.inStock
@@ -123,7 +123,7 @@ export default function ComparePage() {
                   </Link>
                 </div>
                 <div className="mt-auto">
-                  <p className="text-white text-xl font-bold mb-2">{p.price.toLocaleString()} DT</p>
+                  <p className="text-white text-xl font-bold mb-2">{p.price} DT</p>
                   <AddToCartBtn product={p} />
                 </div>
               </div>

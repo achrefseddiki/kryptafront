@@ -4,6 +4,7 @@ import { GRADIENT } from "../../lib/assets";
 import { api } from "../../lib/api";
 import ProductImageGallery from "../../components/ProductImageGallery";
 import AddBuildToCart from "./AddBuildToCart";
+import BuildReviews from "./BuildReviews";
 
 const SPEC_ICONS: Record<string, React.ReactNode> = {
   case: (
@@ -103,6 +104,8 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ id
   const build = await api.kryptaBuilds.get(id).catch(() => null);
   if (!build) notFound();
 
+  const reviews = await api.kryptaBuilds.reviews(build.id).catch(() => []);
+
   const mainImg = build.img ?? "";
   const hasPerformance = build.fps1080 || build.fps1440 || build.fps4k;
   const maxFps = Math.max(build.fps1080 ?? 0, build.fps1440 ?? 0, build.fps4k ?? 0);
@@ -190,7 +193,7 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ id
         {/* Price + CTA */}
         <div className="bg-[#141414] border border-white/[0.07] rounded-2xl p-6 lg:p-8 flex flex-col gap-5">
           <div className="flex items-end gap-3">
-            <span className="text-white text-3xl lg:text-4xl font-bold">{build.price.toLocaleString()}</span>
+            <span className="text-white text-3xl lg:text-4xl font-bold">{build.price}</span>
             <span className="text-[#a0a0a0] text-base mb-1">TND</span>
           </div>
 
@@ -219,6 +222,17 @@ export default async function BuildDetailPage({ params }: { params: Promise<{ id
             Need expert advice? Contact us →
           </a>
         </div>
+
+        {/* Description */}
+        {build.description && (
+          <div className="bg-[#141414] border border-white/[0.07] rounded-2xl p-6 lg:p-8 flex flex-col gap-3">
+            <h2 className="text-white text-xl font-bold">About this Build</h2>
+            <p className="text-[#a0a0a0] text-base leading-[28px] whitespace-pre-wrap">{build.description}</p>
+          </div>
+        )}
+
+        {/* Reviews */}
+        <BuildReviews buildId={build.id} initialReviews={reviews} />
       </div>
     </PageWrapper>
   );

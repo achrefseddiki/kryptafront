@@ -49,7 +49,7 @@ export default async function LabPage() {
               {t.lab.bookRepair}
             </a>
             <a
-              href="/support"
+              href="/contact"
               className="h-[52px] px-8 rounded-2xl flex items-center border border-[#00f5ff] text-[#00f5ff] text-base font-medium hover:bg-[#00f5ff]/10 transition-colors"
             >
               {t.lab.talkToTech}
@@ -178,7 +178,7 @@ export default async function LabPage() {
                 {t.lab.bookOnline}
               </a>
               <a
-                href="/support"
+                href="/contact"
                 className="h-[52px] px-8 rounded-2xl flex items-center border border-[#00f5ff] text-[#00f5ff] text-base font-medium hover:bg-[#00f5ff]/10 transition-colors"
               >
                 {t.lab.contactUs}

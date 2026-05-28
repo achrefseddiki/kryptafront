@@ -93,11 +93,11 @@ export default function AccountOrdersPage() {
             {/* Total + action */}
             <div className="flex items-center gap-3 shrink-0">
               <div className="flex flex-col items-end gap-1">
-                <span className="text-white font-bold text-lg">{order.total.toLocaleString()} DT</span>
+                <span className="text-white font-bold text-lg">{order.total} DT</span>
                 {order.promoCode && order.discountAmount > 0 && (
                   <span className="text-xs text-[#00f5ff] flex items-center gap-1">
                     <span className="font-mono font-bold">{order.promoCode}</span>
-                    <span className="text-[#666]">−{order.discountAmount.toLocaleString()} DT</span>
+                    <span className="text-[#666]">−{order.discountAmount} DT</span>
                   </span>
                 )}
               </div>

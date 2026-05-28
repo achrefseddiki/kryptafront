@@ -131,7 +131,7 @@ export default async function BuildsPage() {
                           className="text-2xl font-bold"
                           style={{ background: GRADIENT, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}
                         >
-                          {build.price.toLocaleString()} TND
+                          {build.price} TND
                         </span>
                         <div className="flex items-center gap-2">
                           <a

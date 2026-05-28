@@ -26,7 +26,7 @@ export default function CompareBar() {
                 <img src={p.img} alt={p.name} className="size-9 rounded-lg object-cover bg-[#111]" />
                 <div className="max-w-[100px]">
                   <p className="text-white text-xs font-medium truncate leading-tight">{p.name}</p>
-                  <p className="text-[#00f5ff] text-xs font-bold">{p.price.toLocaleString()} DT</p>
+                  <p className="text-[#00f5ff] text-xs font-bold">{p.price} DT</p>
                 </div>
                 <button
                   onClick={() => toggle(p)}

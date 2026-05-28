@@ -1,4 +1,4 @@
-import type { Category, Product, BlogPost, Drop, Review, HeroContent, FeaturedBuild, Offer, KryptaBuild } from './types';
+import type { Category, Product, BlogPost, Drop, Review, HeroContent, FeaturedBuild, Offer, KryptaBuild, SearchResults, Shop } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
@@ -184,8 +184,8 @@ export const api = {
     listActive: () => get<Offer[]>('/offers'),
     getBySlug: (slug: string) => get<Offer>(`/offers/slug/${slug}`),
     reviews: (offerId: string) => get<Review[]>(`/offers/${offerId}/reviews`),
-    addReview: (offerId: string, body: { author: string; rating: number; body: string }) =>
-      post<Review>(`/offers/${offerId}/reviews`, body),
+    createReview: (offerId: string, body: { rating: number; body: string }) =>
+      authPost<Review>(`/offers/${offerId}/reviews`, body),
   },
   heroContent: {
     get: () => get<HeroContent | null>('/hero-content'),
@@ -196,6 +196,9 @@ export const api = {
   kryptaBuilds: {
     list: () => get<KryptaBuild[]>('/krypta-builds'),
     get: (id: string) => get<KryptaBuild>(`/krypta-builds/${id}`),
+    reviews: (buildId: string) => get<Review[]>(`/krypta-builds/${buildId}/reviews`),
+    createReview: (buildId: string, body: { rating: number; body: string }) =>
+      authPost<Review>(`/krypta-builds/${buildId}/reviews`, body),
   },
   builder: {
     suggest: (payload: {
@@ -227,6 +230,12 @@ export const api = {
     remove: (productId: string) => authDelete(`/users/me/wishlist/${productId}`),
     getPublic: (userId: string) => get<{ firstName: string; products: Product[] }>(`/users/${userId}/wishlist`),
   },
+  search: {
+    query: (q: string) => get<SearchResults>(`/search?q=${encodeURIComponent(q)}`),
+  },
+  shops: {
+    list: () => get<Shop[]>('/shops'),
+  },
   admin: {
     categories: {
       create: (dto: unknown) => authPost<Category>('/categories', dto),
@@ -254,5 +263,12 @@ export const api = {
       update: (id: string, dto: unknown) => authPatch<Offer>(`/offers/${id}`, dto),
       remove: (id: string) => authDelete(`/offers/${id}`),
     },
+  },
+  pages: {
+    getBySlug: (slug: string) => get<{ slug: string; title: string; content: string; updatedAt: string }>(`/pages/${slug}`),
+  },
+  contact: {
+    submit: (dto: { name: string; email: string; subject?: string; message: string }) =>
+      post<void>('/contact', dto),
   },
 };

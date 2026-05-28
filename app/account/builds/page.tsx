@@ -113,7 +113,7 @@ export default function AccountBuildsPage() {
                   </p>
                 </div>
                 <span className="text-white font-bold text-lg shrink-0">
-                  {build.total.toLocaleString()} DT
+                  {build.total} DT
                 </span>
               </div>
 

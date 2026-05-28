@@ -237,12 +237,12 @@ export default async function OrderTrackPage({
                     <p className="text-white text-sm font-medium truncate">{item.name}</p>
                     <p className="text-[#666] text-xs">× {item.qty}</p>
                   </div>
-                  <span className="text-white text-sm font-bold shrink-0">{(item.price * item.qty).toLocaleString()} DT</span>
+                  <span className="text-white text-sm font-bold shrink-0">{(item.price * item.qty)} DT</span>
                 </div>
               ))}
               <div className="border-t border-[rgba(255,255,255,0.06)] pt-3 flex justify-between items-center">
                 <span className="text-[#a0a0a0] text-sm">{locale === "fr" ? "Total" : "Total"}</span>
-                <span className="text-white font-bold text-lg">{order.total.toLocaleString()} DT</span>
+                <span className="text-white font-bold text-lg">{order.total} DT</span>
               </div>
             </div>
           </div>
